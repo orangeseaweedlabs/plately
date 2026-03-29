@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>MealKit — Meal Detail</title>
+  <link rel="stylesheet" href="styles.css"/>
+  <style>
+    .meal-hero{
+      padding:20px 16px 28px;
+      color:var(--bg);
+    }
+    .meal-hero.breakfast{background:var(--blue-dark);}
+    .meal-hero.lunch    {background:var(--green-dark);}
+    .meal-hero.dinner   {background:var(--pink-dark);}
+
+    .meal-hero .hero-label{
+      font-size:.72rem;font-weight:700;letter-spacing:.06em;
+      text-transform:uppercase;opacity:.7;margin-bottom:6px;
+    }
+    .meal-hero h1{font-size:1.35rem;line-height:1.25;margin-bottom:6px;}
+    .meal-hero .hero-date{font-size:.85rem;opacity:.65;}
+
+    .curve-card{
+      background:var(--bg);
+      border-radius:20px 20px 0 0;
+      padding-top:20px;
+      margin-top:-10px;
+    }
+
+    .dish-card{
+      background:#fff;
+      border-radius:var(--r-sm);
+      border:1.5px solid var(--border);
+      padding:14px;
+      margin-bottom:10px;
+      display:flex;align-items:flex-start;gap:12px;
+      cursor:pointer;
+      transition:background .15s;
+    }
+    .dish-card:hover{background:var(--surface);}
+    .dish-card-icon{
+      width:44px;height:44px;border-radius:10px;
+      display:flex;align-items:center;justify-content:center;
+      font-size:1.4rem;flex-shrink:0;
+    }
+    .dish-card-icon.protein{background:#fff3e0;}
+    .dish-card-icon.carb   {background:#fffbdd;}
+    .dish-card-icon.greens {background:var(--green-light);}
+    .dish-card-icon.others {background:var(--surface);}
+
+    .dish-card-body{flex:1;min-width:0;}
+    .dish-card-name{font-weight:700;font-size:.9rem;}
+    .dish-card-meta{font-size:.75rem;color:var(--dark-60);margin-top:3px;}
+    .dish-card-arrow{color:var(--dark-60);font-size:.85rem;align-self:center;}
+
+    .delete-btn{
+      background:transparent;border:none;
+      color:var(--pink-dark);font-size:.85rem;padding:4px;
+      cursor:pointer;opacity:.7;
+    }
+    .delete-btn:hover{opacity:1;}
+  </style>
+</head>
+<body>
+
+<div class="page-wrap">
+  <div class="topbar">
+    <button class="icon-btn" onclick="history.back()">&#8592;</button>
+    <span class="topbar-title">Meal Detail</span>
+    <button class="icon-btn light" onclick="editMeal()" title="Edit">✏️</button>
+  </div>
+</div>
+
+<!-- Hero -->
+<div class="meal-hero breakfast page-wrap" id="meal-hero">
+  <p class="hero-label" id="meal-type-label">☀️ Breakfast</p>
+  <h1 id="meal-name-display">Grilled Chicken + Steamed Rice + Stir-fried Spinach</h1>
+  <p class="hero-date" id="meal-date-display">Sunday, 29 March 2026</p>
+</div>
+
+<!-- Dishes in this meal -->
+<div class="curve-card">
+  <div class="page-wrap">
+    <div class="content">
+
+      <div class="section-head fade-up">
+        <h2>Dishes in this Meal</h2>
+        <button class="link-btn" onclick="window.location='meal-add.html?id=1&edit=1'">+ Add dish</button>
+      </div>
+
+      <!-- Dish cards — replace with Supabase fetch -->
+      <div id="dishes-container">
+
+        <div class="dish-card fade-up delay-1" onclick="window.location='dish-detail.html?id=1'">
+          <div class="dish-card-icon protein">🍗</div>
+          <div class="dish-card-body">
+            <p class="dish-card-name">Grilled Chicken</p>
+            <p class="dish-card-meta">Western · <span class="badge badge-protein" style="font-size:.65rem;padding:2px 7px;">Protein</span></p>
+          </div>
+          <button class="delete-btn" onclick="removeDish(event,1)" title="Remove">✕</button>
+          <span class="dish-card-arrow">›</span>
+        </div>
+
+        <div class="dish-card fade-up delay-2" onclick="window.location='dish-detail.html?id=2'">
+          <div class="dish-card-icon carb">🍚</div>
+          <div class="dish-card-body">
+            <p class="dish-card-name">Steamed Rice</p>
+            <p class="dish-card-meta">Chinese · <span class="badge badge-carb" style="font-size:.65rem;padding:2px 7px;">Carb</span></p>
+          </div>
+          <button class="delete-btn" onclick="removeDish(event,2)" title="Remove">✕</button>
+          <span class="dish-card-arrow">›</span>
+        </div>
+
+        <div class="dish-card fade-up delay-3" onclick="window.location='dish-detail.html?id=3'">
+          <div class="dish-card-icon greens">🥬</div>
+          <div class="dish-card-body">
+            <p class="dish-card-name">Stir-fried Spinach</p>
+            <p class="dish-card-meta">Chinese · <span class="badge badge-greens" style="font-size:.65rem;padding:2px 7px;">Greens</span></p>
+          </div>
+          <button class="delete-btn" onclick="removeDish(event,3)" title="Remove">✕</button>
+          <span class="dish-card-arrow">›</span>
+        </div>
+
+      </div>
+
+      <div class="empty-state" id="no-dishes" style="display:none;">
+        <div class="empty-icon">🍽️</div>
+        <p>No dishes in this meal yet.</p>
+      </div>
+
+      <!-- Delete meal -->
+      <div style="margin-top:24px;padding-bottom:12px;" class="fade-up delay-4">
+        <button class="btn btn-danger btn-block" onclick="deleteMeal()">🗑 Delete Meal</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav">
+  <button class="nav-item" onclick="window.location='index.html'"><span class="nav-icon">🏠</span>Home</button>
+  <button class="nav-item" onclick="window.location='dishes.html'"><span class="nav-icon">🍽</span>Dishes</button>
+  <button class="nav-item active" onclick="window.location='meals.html'"><span class="nav-icon">📅</span>Meals</button>
+  <button class="nav-item" onclick="window.location='groceries.html'"><span class="nav-icon">🛒</span>Groceries</button>
+</nav>
+
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const mealId = params.get('id');
+
+  /* Sample — replace with Supabase fetch by mealId */
+  const meal = {
+    id: mealId,
+    meal_type: 'Breakfast',
+    meal_date: new Date().toLocaleDateString('en-SG',{weekday:'long',day:'numeric',month:'long',year:'numeric'}),
+    dishes: [
+      {id:1,name:'Grilled Chicken',cuisine:'Western',dish_type:'Protein'},
+      {id:2,name:'Steamed Rice',  cuisine:'Chinese', dish_type:'Carb'},
+      {id:3,name:'Stir-fried Spinach',cuisine:'Chinese',dish_type:'Greens'},
+    ]
+  };
+
+  // Build auto meal name from Protein + Carb + Greens + Others
+  const typeOrder = ['Protein','Carb','Greens','Others'];
+  const byType = {};
+  meal.dishes.forEach(d=>{ if(!byType[d.dish_type]) byType[d.dish_type]=[]; byType[d.dish_type].push(d.name); });
+  const parts = typeOrder.filter(t=>byType[t]).map(t=>byType[t].join(' & '));
+  document.getElementById('meal-name-display').textContent = parts.join(' + ') || '(No dishes)';
+
+  const typeLabels = { Breakfast:'☀️ Breakfast', Lunch:'🌤 Lunch', Dinner:'🌙 Dinner' };
+  document.getElementById('meal-type-label').textContent = typeLabels[meal.meal_type] || meal.meal_type;
+  document.getElementById('meal-date-display').textContent = meal.meal_date;
+
+  const hero = document.getElementById('meal-hero');
+  hero.classList.remove('breakfast','lunch','dinner');
+  hero.classList.add(meal.meal_type.toLowerCase());
+
+  function removeDish(e, dishId){
+    e.stopPropagation();
+    if(!confirm('Remove this dish from the meal?')) return;
+    /* TODO: DELETE from Supabase meal_dishes */
+    e.target.closest('.dish-card').remove();
+    if(document.querySelectorAll('#dishes-container .dish-card').length===0){
+      document.getElementById('no-dishes').style.display='';
+    }
+  }
+
+  function editMeal(){ window.location = `meal-add.html?id=${meal.id}&edit=1`; }
+
+  function deleteMeal(){
+    if(!confirm('Delete this meal?')) return;
+    /* TODO: DELETE from Supabase meals */
+    window.location = 'meals.html';
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>MealKit — Ingredient Detail</title>
+  <link rel="stylesheet" href="styles.css"/>
+  <style>
+    .ing-hero{
+      background:var(--dark);color:var(--bg);
+      padding:20px 16px 28px;
+      display:flex;align-items:flex-end;gap:16px;
+    }
+    .ing-hero-icon{
+      width:64px;height:64px;border-radius:16px;
+      display:flex;align-items:center;justify-content:center;
+      font-size:2rem;flex-shrink:0;
+      background:rgba(255,250,240,.12);
+    }
+    .ing-hero-body h1{font-size:1.4rem;margin-bottom:6px;}
+    .ing-hero-body .ing-badge{opacity:.8;}
+
+    .curve-bg{background:var(--bg);border-radius:20px 20px 0 0;padding-top:20px;margin-top:-10px;}
+
+    .info-row{
+      display:flex;align-items:center;justify-content:space-between;
+      padding:14px 0;border-bottom:1.5px solid var(--border);
+    }
+    .info-row:last-child{border-bottom:none;}
+    .info-label{font-size:.78rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--dark-60);}
+    .info-value{font-size:.9rem;font-weight:600;text-align:right;}
+
+    .dishes-used{margin-top:20px;}
+    .dishes-used h2{font-size:.95rem;font-family:'Archivo Black',sans-serif;margin-bottom:10px;}
+    .dish-pill{
+      display:inline-flex;align-items:center;gap:6px;
+      padding:7px 14px;border-radius:40px;
+      background:#fff;border:1.5px solid var(--border);
+      font-size:.82rem;font-weight:600;margin:0 6px 8px 0;
+      cursor:pointer;transition:background .15s;
+    }
+    .dish-pill:hover{background:var(--surface);}
+  </style>
+</head>
+<body>
+
+<div class="page-wrap">
+  <div class="topbar">
+    <button class="icon-btn" onclick="history.back()">&#8592;</button>
+    <span class="topbar-title">Ingredient Detail</span>
+    <button class="icon-btn light" id="edit-btn" onclick="editIngredient()">✏️</button>
+  </div>
+</div>
+
+<!-- Hero -->
+<div class="ing-hero page-wrap">
+  <div class="ing-hero-icon" id="ing-icon">🥬</div>
+  <div class="ing-hero-body">
+    <h1 id="ing-name">Spinach</h1>
+    <span class="badge type-vegetable ing-badge" id="ing-type-badge">Vegetable</span>
+  </div>
+</div>
+
+<!-- Content -->
+<div class="curve-bg">
+  <div class="page-wrap">
+    <div class="content">
+
+      <!-- Info rows -->
+      <div class="card fade-up" style="padding:4px 16px;">
+        <div class="info-row">
+          <span class="info-label">Type</span>
+          <span class="info-value" id="info-type">Vegetable</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">On Grocery List</span>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span id="tobuy-label" style="font-size:.85rem;font-weight:600;color:var(--green-dark)">Yes</span>
+            <button class="toggle on" id="tobuy-toggle" onclick="toggleToBuy()"></button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Dishes using this ingredient -->
+      <div class="dishes-used fade-up delay-1">
+        <h2>Used in Dishes</h2>
+        <div id="dishes-pills">
+          <span class="dish-pill" onclick="window.location='dish-detail.html?id=3'">🥬 Stir-fried Spinach</span>
+          <span class="dish-pill" onclick="window.location='dish-detail.html?id=9'">🥗 Garden Salad</span>
+        </div>
+        <div id="no-dishes" style="display:none;" class="small muted">Not used in any dish yet.</div>
+      </div>
+
+      <!-- Delete -->
+      <div style="margin-top:28px;padding-bottom:12px;" class="fade-up delay-2">
+        <button class="btn btn-danger btn-block" onclick="deleteIngredient()">🗑 Delete Ingredient</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav">
+  <button class="nav-item" onclick="window.location='index.html'"><span class="nav-icon">🏠</span>Home</button>
+  <button class="nav-item" onclick="window.location='dishes.html'"><span class="nav-icon">🍽</span>Dishes</button>
+  <button class="nav-item" onclick="window.location='meals.html'"><span class="nav-icon">📅</span>Meals</button>
+  <button class="nav-item" onclick="window.location='groceries.html'"><span class="nav-icon">🛒</span>Groceries</button>
+</nav>
+
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const ingId = params.get('id');
+
+  /* Sample data — replace with Supabase fetch by ingId */
+  const ingredient = {
+    id: ingId || 3,
+    name: 'Spinach',
+    ingredient_type: 'Vegetable',
+    to_buy: true,
+  };
+
+  const iconMap = { Meat:'🥩', Vegetable:'🥦', Rice:'🍚', Noodle:'🍜', Others:'✨' };
+  const badgeMap = { Meat:'type-meat', Vegetable:'type-vegetable', Rice:'type-rice', Noodle:'type-noodle', Others:'type-others' };
+
+  document.getElementById('ing-name').textContent = ingredient.name;
+  document.getElementById('ing-icon').textContent = iconMap[ingredient.ingredient_type] || '🥗';
+  document.getElementById('info-type').textContent = ingredient.ingredient_type;
+
+  const typeBadge = document.getElementById('ing-type-badge');
+  typeBadge.textContent = ingredient.ingredient_type;
+  typeBadge.className = `badge ${badgeMap[ingredient.ingredient_type]||'type-others'} ing-badge`;
+
+  let toBuy = ingredient.to_buy;
+  function renderToBuy(){
+    const toggle = document.getElementById('tobuy-toggle');
+    const label  = document.getElementById('tobuy-label');
+    toggle.className = 'toggle' + (toBuy ? ' on' : '');
+    label.textContent = toBuy ? 'Yes' : 'No';
+    label.style.color = toBuy ? 'var(--green-dark)' : 'var(--dark-60)';
+  }
+  renderToBuy();
+
+  function toggleToBuy(){
+    toBuy = !toBuy;
+    renderToBuy();
+    /* TODO: UPDATE Supabase ingredients set to_buy = toBuy where id = ingredient.id */
+    console.log(`Updated to_buy = ${toBuy} for ingredient ${ingredient.id}`);
+  }
+
+  function editIngredient(){
+    const newName = prompt('Edit ingredient name:', ingredient.name);
+    if(newName && newName.trim()){
+      ingredient.name = newName.trim();
+      document.getElementById('ing-name').textContent = ingredient.name;
+      /* TODO: UPDATE Supabase */
+    }
+  }
+
+  function deleteIngredient(){
+    if(!confirm(`Delete "${ingredient.name}"?`)) return;
+    /* TODO: DELETE from Supabase */
+    window.location = 'ingredients.html';
+  }
+</script>
+</body>
+</html>

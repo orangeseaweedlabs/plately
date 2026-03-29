@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>MealKit — Add Dish</title>
+  <link rel="stylesheet" href="styles.css"/>
+  <style>
+    .ingredient-group{margin-bottom:20px;}
+    .group-title{
+      font-size:.75rem;font-weight:700;letter-spacing:.06em;
+      text-transform:uppercase;color:var(--dark-60);
+      margin-bottom:10px;
+    }
+    .selected-count{
+      font-size:.75rem;font-weight:600;color:var(--dark-60);
+      margin-top:8px;
+    }
+    .selected-count span{color:var(--dark);font-weight:700;}
+
+    .sticky-footer{
+      position:sticky;bottom:calc(var(--nav-h) + 8px);
+      background:var(--bg);
+      padding:12px 16px;
+      border-top:1.5px solid var(--border);
+      max-width:var(--max-w);
+      margin:0 auto;
+    }
+  </style>
+</head>
+<body>
+
+<div class="page-wrap">
+  <div class="topbar">
+    <button class="icon-btn" onclick="history.back()">&#8592;</button>
+    <span class="topbar-title" id="page-title">Add Dish</span>
+  </div>
+</div>
+
+<div class="page-wrap">
+  <div class="content">
+
+    <!-- Dish Name -->
+    <div class="form-group fade-up">
+      <label class="form-label">Dish Name *</label>
+      <input class="form-control" type="text" id="dish-name" placeholder="e.g. Grilled Salmon" required/>
+    </div>
+
+    <!-- Cuisine + Dish Type -->
+    <div class="flex gap-12 fade-up delay-1">
+      <div class="form-group" style="flex:1">
+        <label class="form-label">Cuisine</label>
+        <select class="form-control" id="cuisine">
+          <option value="">Select…</option>
+          <option>Western</option>
+          <option>Italian</option>
+          <option>Chinese</option>
+          <option>Japanese</option>
+          <option>Korean</option>
+        </select>
+      </div>
+      <div class="form-group" style="flex:1">
+        <label class="form-label">Dish Type *</label>
+        <select class="form-control" id="dish-type">
+          <option value="">Select…</option>
+          <option>Protein</option>
+          <option>Carb</option>
+          <option>Greens</option>
+          <option>Others</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Recipe Reference -->
+    <div class="form-group fade-up delay-1">
+      <label class="form-label">Recipe Link <span style="font-weight:400;text-transform:none;letter-spacing:0">(optional)</span></label>
+      <input class="form-control" type="url" id="recipe-ref" placeholder="https://…"/>
+    </div>
+
+    <div class="divider fade-up delay-2"></div>
+
+    <!-- Ingredient selection by type -->
+    <div class="fade-up delay-2">
+      <p style="font-family:'Archivo Black',sans-serif;font-size:1rem;margin-bottom:4px;">Select Ingredients</p>
+      <p class="small muted mb-16">Tap chips to add ingredients to this dish</p>
+
+      <!-- Meat -->
+      <div class="ingredient-group">
+        <p class="group-title">🥩 Meat</p>
+        <div class="chip-group" id="group-meat">
+          <span class="chip chip-orange" data-id="1" data-type="Meat" onclick="toggleChip(this)">Chicken</span>
+          <span class="chip chip-orange" data-id="2" data-type="Meat" onclick="toggleChip(this)">Salmon</span>
+          <span class="chip chip-orange" data-id="3" data-type="Meat" onclick="toggleChip(this)">Beef</span>
+          <span class="chip chip-orange" data-id="4" data-type="Meat" onclick="toggleChip(this)">Pork Belly</span>
+          <span class="chip chip-orange" data-id="5" data-type="Meat" onclick="toggleChip(this)">Tofu</span>
+          <span class="chip chip-orange" data-id="6" data-type="Meat" onclick="toggleChip(this)">Eggs</span>
+        </div>
+      </div>
+
+      <!-- Vegetable -->
+      <div class="ingredient-group">
+        <p class="group-title">🥦 Vegetable</p>
+        <div class="chip-group" id="group-vegetable">
+          <span class="chip chip-green" data-id="7" data-type="Vegetable" onclick="toggleChip(this)">Spinach</span>
+          <span class="chip chip-green" data-id="8" data-type="Vegetable" onclick="toggleChip(this)">Bok Choy</span>
+          <span class="chip chip-green" data-id="9" data-type="Vegetable" onclick="toggleChip(this)">Broccoli</span>
+          <span class="chip chip-green" data-id="10" data-type="Vegetable" onclick="toggleChip(this)">Carrot</span>
+          <span class="chip chip-green" data-id="11" data-type="Vegetable" onclick="toggleChip(this)">Spring Onion</span>
+          <span class="chip chip-green" data-id="12" data-type="Vegetable" onclick="toggleChip(this)">Mushrooms</span>
+        </div>
+      </div>
+
+      <!-- Rice -->
+      <div class="ingredient-group">
+        <p class="group-title">🍚 Rice</p>
+        <div class="chip-group" id="group-rice">
+          <span class="chip chip-amber" data-id="13" data-type="Rice" onclick="toggleChip(this)">White Rice</span>
+          <span class="chip chip-amber" data-id="14" data-type="Rice" onclick="toggleChip(this)">Brown Rice</span>
+          <span class="chip chip-amber" data-id="15" data-type="Rice" onclick="toggleChip(this)">Fried Rice</span>
+        </div>
+      </div>
+
+      <!-- Noodle -->
+      <div class="ingredient-group">
+        <p class="group-title">🍜 Noodle</p>
+        <div class="chip-group" id="group-noodle">
+          <span class="chip chip-pink" data-id="16" data-type="Noodle" onclick="toggleChip(this)">Udon</span>
+          <span class="chip chip-pink" data-id="17" data-type="Noodle" onclick="toggleChip(this)">Ramen</span>
+          <span class="chip chip-pink" data-id="18" data-type="Noodle" onclick="toggleChip(this)">Soba</span>
+          <span class="chip chip-pink" data-id="19" data-type="Noodle" onclick="toggleChip(this)">Glass Noodles</span>
+        </div>
+      </div>
+
+      <!-- Others -->
+      <div class="ingredient-group">
+        <p class="group-title">✨ Others</p>
+        <div class="chip-group" id="group-others">
+          <span class="chip chip-dark" data-id="20" data-type="Others" onclick="toggleChip(this)">Soy Sauce</span>
+          <span class="chip chip-dark" data-id="21" data-type="Others" onclick="toggleChip(this)">Sesame Oil</span>
+          <span class="chip chip-dark" data-id="22" data-type="Others" onclick="toggleChip(this)">Garlic</span>
+          <span class="chip chip-dark" data-id="23" data-type="Others" onclick="toggleChip(this)">Ginger</span>
+          <span class="chip chip-dark" data-id="24" data-type="Others" onclick="toggleChip(this)">Miso Paste</span>
+          <span class="chip chip-dark" data-id="25" data-type="Others" onclick="toggleChip(this)">Oyster Sauce</span>
+        </div>
+      </div>
+
+      <p class="selected-count">Selected: <span id="sel-count">0</span> ingredient(s)</p>
+    </div>
+
+    <!-- Save -->
+    <div style="padding-bottom:20px;margin-top:20px;" class="fade-up delay-3">
+      <button class="btn btn-primary btn-block" onclick="saveDish()">Save Dish</button>
+    </div>
+
+  </div>
+</div>
+
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav">
+  <button class="nav-item" onclick="window.location='index.html'"><span class="nav-icon">🏠</span>Home</button>
+  <button class="nav-item active" onclick="window.location='dishes.html'"><span class="nav-icon">🍽</span>Dishes</button>
+  <button class="nav-item" onclick="window.location='meals.html'"><span class="nav-icon">📅</span>Meals</button>
+  <button class="nav-item" onclick="window.location='groceries.html'"><span class="nav-icon">🛒</span>Groceries</button>
+</nav>
+
+<script>
+  const params = new URLSearchParams(window.location.search);
+  if(params.get('edit')==='1') document.getElementById('page-title').textContent = 'Edit Dish';
+
+  const selected = new Set();
+
+  function toggleChip(el){
+    const id = el.dataset.id;
+    const type = el.dataset.type;
+    // determine which chip color class to use
+    const colorMap = { Meat:'chip-orange', Vegetable:'chip-green', Rice:'chip-amber', Noodle:'chip-pink', Others:'chip-dark' };
+    const colorClass = colorMap[type] || 'chip-dark';
+
+    if(selected.has(id)){
+      selected.delete(id);
+      el.classList.remove('selected', colorClass);
+      el.classList.add(colorClass);
+    } else {
+      selected.add(id);
+      el.classList.add('selected');
+    }
+    document.getElementById('sel-count').textContent = selected.size;
+  }
+
+  function saveDish(){
+    const name = document.getElementById('dish-name').value.trim();
+    const dishType = document.getElementById('dish-type').value;
+    if(!name){ alert('Please enter a dish name.'); return; }
+    if(!dishType){ alert('Please select a dish type.'); return; }
+    if(selected.size === 0){ alert('Please select at least one ingredient.'); return; }
+
+    const payload = {
+      dish_name: name,
+      cuisine: document.getElementById('cuisine').value,
+      dish_type: dishType,
+      recipe_ref: document.getElementById('recipe-ref').value.trim() || null,
+      ingredient_ids: [...selected],
+    };
+    console.log('Save dish payload:', payload);
+    /* TODO: POST to Supabase */
+    window.location = 'dishes.html';
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>MealKit — Groceries</title>
+  <link rel="stylesheet" href="styles.css"/>
+  <style>
+    .grocery-header{
+      background:var(--dark);
+      color:var(--bg);
+      padding:20px 16px 28px;
+    }
+    .grocery-header h1{font-size:1.55rem;margin-bottom:6px;}
+    .grocery-header p{font-size:.85rem;opacity:.55;}
+
+    .curve{background:var(--bg);border-radius:20px 20px 0 0;padding-top:20px;margin-top:-10px;}
+
+    .grocery-count{
+      font-family:'Archivo Black',sans-serif;
+      font-size:1rem;
+      display:flex;align-items:center;gap:8px;
+      margin-bottom:16px;
+    }
+    .count-pill{
+      background:var(--green);color:#fff;
+      font-size:.78rem;padding:2px 10px;border-radius:20px;
+      font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;
+    }
+
+    .grocery-item{
+      display:flex;align-items:center;gap:12px;
+      padding:14px 16px;
+      background:#fff;
+      border-bottom:1.5px solid var(--border);
+      transition:background .15s;
+    }
+    .grocery-item:first-child{border-radius:var(--r) var(--r) 0 0;}
+    .grocery-item:last-child{border-radius:0 0 var(--r) var(--r);border-bottom:none;}
+    .grocery-item:only-child{border-radius:var(--r);}
+    .grocery-item.checked{opacity:.5;}
+    .grocery-item.checked .item-name{text-decoration:line-through;}
+
+    .check-box{
+      width:22px;height:22px;border-radius:6px;
+      border:2px solid var(--border);
+      cursor:pointer;flex-shrink:0;
+      display:flex;align-items:center;justify-content:center;
+      font-size:.85rem;
+      transition:all .18s;background:#fff;
+    }
+    .check-box.checked{background:var(--green);border-color:var(--green-dark);color:#fff;}
+
+    .item-name{font-weight:600;font-size:.9rem;flex:1;}
+    .item-type-icon{
+      width:34px;height:34px;border-radius:8px;
+      display:flex;align-items:center;justify-content:center;
+      font-size:1rem;flex-shrink:0;
+    }
+
+    .group-header{
+      font-size:.72rem;font-weight:700;letter-spacing:.06em;
+      text-transform:uppercase;color:var(--dark-60);
+      margin:20px 0 8px;
+    }
+    .group-header:first-child{margin-top:0;}
+
+    .clear-bar{
+      position:sticky;
+      bottom:calc(var(--nav-h) + 12px);
+      padding:12px 16px;
+      background:var(--bg);
+      border-top:1.5px solid var(--border);
+      max-width:var(--max-w);margin:0 auto;
+      display:flex;gap:10px;
+    }
+  </style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="page-wrap">
+  <div class="topbar">
+    <span class="topbar-logo">meal<span>kit</span></span>
+    <span class="topbar-title"></span>
+  </div>
+</div>
+
+<!-- Hero -->
+<div class="grocery-header page-wrap">
+  <h1>Grocery List 🛒</h1>
+  <p>Items marked "To Buy" across all dishes</p>
+</div>
+
+<div class="curve">
+  <div class="page-wrap">
+    <div class="content">
+
+      <div class="grocery-count fade-up">
+        Items to get: <span class="count-pill" id="total-count">4</span>
+      </div>
+
+      <!-- Meat group -->
+      <p class="group-header fade-up">🥩 Meat</p>
+      <div class="list-block fade-up delay-1" id="group-meat">
+        <div class="grocery-item" id="item-1">
+          <div class="item-type-icon" style="background:#fff0e8">🍗</div>
+          <span class="item-name">Chicken Breast</span>
+          <button class="check-box" id="cb-1" onclick="checkItem(1)"></button>
+        </div>
+      </div>
+
+      <!-- Vegetable group -->
+      <p class="group-header fade-up delay-1">🥦 Vegetable</p>
+      <div class="list-block fade-up delay-2" id="group-vegetable">
+        <div class="grocery-item" id="item-3">
+          <div class="item-type-icon" style="background:var(--green-light)">🥬</div>
+          <span class="item-name">Spinach</span>
+          <button class="check-box" id="cb-3" onclick="checkItem(3)"></button>
+        </div>
+        <div class="grocery-item" id="item-9">
+          <div class="item-type-icon" style="background:var(--green-light)">🥦</div>
+          <span class="item-name">Broccoli</span>
+          <button class="check-box" id="cb-9" onclick="checkItem(9)"></button>
+        </div>
+      </div>
+
+      <!-- Noodle group -->
+      <p class="group-header fade-up delay-2">🍜 Noodle</p>
+      <div class="list-block fade-up delay-3" id="group-noodle">
+        <div class="grocery-item" id="item-6">
+          <div class="item-type-icon" style="background:#fde8f5">🍜</div>
+          <span class="item-name">Udon</span>
+          <button class="check-box" id="cb-6" onclick="checkItem(6)"></button>
+        </div>
+      </div>
+
+      <!-- Empty state -->
+      <div class="empty-state" id="empty-state" style="display:none;">
+        <div class="empty-icon">🎉</div>
+        <p>Your grocery list is empty!<br/>Mark ingredients as "To Buy" from the ingredient detail page.</p>
+      </div>
+
+      <div style="height:70px;"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Clear / Refresh sticky bar -->
+<div class="clear-bar page-wrap">
+  <button class="btn btn-outline" style="flex:1" onclick="refreshList()">🔄 Refresh</button>
+  <button class="btn btn-danger" style="flex:1" onclick="clearAll()">🧹 Clear All</button>
+</div>
+
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav">
+  <button class="nav-item" onclick="window.location='index.html'"><span class="nav-icon">🏠</span>Home</button>
+  <button class="nav-item" onclick="window.location='dishes.html'"><span class="nav-icon">🍽</span>Dishes</button>
+  <button class="nav-item" onclick="window.location='meals.html'"><span class="nav-icon">📅</span>Meals</button>
+  <button class="nav-item active" onclick="window.location='groceries.html'"><span class="nav-icon">🛒</span>Groceries</button>
+</nav>
+
+<script>
+  const checked = new Set();
+
+  function checkItem(id){
+    const item = document.getElementById(`item-${id}`);
+    const cb   = document.getElementById(`cb-${id}`);
+    if(checked.has(id)){
+      checked.delete(id);
+      item.classList.remove('checked');
+      cb.classList.remove('checked');
+      cb.textContent = '';
+    } else {
+      checked.add(id);
+      item.classList.add('checked');
+      cb.classList.add('checked');
+      cb.textContent = '✓';
+    }
+    updateCount();
+  }
+
+  function updateCount(){
+    const total = document.querySelectorAll('.grocery-item').length;
+    const remaining = total - checked.size;
+    document.getElementById('total-count').textContent = remaining;
+    if(remaining===0){
+      document.querySelectorAll('.list-block,.group-header').forEach(el=>el.style.display='none');
+      document.getElementById('empty-state').style.display='';
+    }
+  }
+
+  function clearAll(){
+    if(!confirm('Mark all items as purchased? This will set To Buy = false for all items.')) return;
+    /* TODO: UPDATE Supabase set to_buy = false for all */
+    document.querySelectorAll('.grocery-item').forEach(item=>{
+      const id = item.id.replace('item-','');
+      checkItem(Number(id));
+    });
+  }
+
+  function refreshList(){
+    /* TODO: Re-fetch from Supabase */
+    window.location.reload();
+  }
+</script>
+</body>
+</html>
