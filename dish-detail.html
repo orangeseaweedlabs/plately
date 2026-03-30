@@ -6,48 +6,18 @@
   <title>MealKit — Dish Detail</title>
   <link rel="stylesheet" href="styles.css"/>
   <style>
-    .dish-hero{
-      background:var(--dark);
-      color:var(--bg);
-      padding:20px 16px 28px;
-    }
+    .dish-hero{background:var(--dark);color:var(--bg);padding:20px 16px 28px;}
     .dish-hero .meta{display:flex;gap:8px;align-items:center;margin-bottom:10px;}
     .dish-hero h1{font-size:1.5rem;}
-    .dish-hero .cuisine-tag{
-      font-size:.72rem;font-weight:700;letter-spacing:.04em;
-      text-transform:uppercase;opacity:.55;
-    }
-
-    .hero-curve{
-      background:var(--bg);
-      border-radius:20px 20px 0 0;
-      padding-top:4px;
-      margin-top:-8px;
-    }
-
+    .dish-hero .cuisine-tag{font-size:.72rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;opacity:.55;}
+    .hero-curve{background:var(--bg);border-radius:20px 20px 0 0;padding-top:4px;margin-top:-8px;}
     .ingredient-section{margin-bottom:20px;}
-    .ingredient-section-title{
-      font-size:.72rem;font-weight:700;letter-spacing:.06em;
-      text-transform:uppercase;color:var(--dark-60);
-      margin-bottom:8px;
-    }
-
-    .ingredient-row{
-      display:flex;align-items:center;justify-content:space-between;
-      padding:11px 14px;
-      background:#fff;
-      border-bottom:1.5px solid var(--border);
-    }
-    .ingredient-row:first-of-type{border-radius:var(--r-sm) var(--r-sm) 0 0;}
-    .ingredient-row:last-of-type{border-radius:0 0 var(--r-sm) var(--r-sm);border-bottom:none;}
-    .ingredient-row:only-of-type{border-radius:var(--r-sm);}
+    .ingredient-section-title{font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--dark-60);margin-bottom:8px;}
+    .ingredient-row{display:flex;align-items:center;justify-content:space-between;padding:11px 14px;background:#fff;border-bottom:1.5px solid var(--border);}
+    .ingredient-row:last-child{border-bottom:none;}
     .ingredient-row .name{font-weight:600;font-size:.88rem;}
     .ingredient-row .ing-type{font-size:.73rem;padding:3px 9px;border-radius:20px;font-weight:600;}
-
-    .action-row{
-      display:grid;grid-template-columns:1fr 1fr;gap:12px;
-      margin-top:8px;
-    }
+    .action-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:8px;}
     .action-row .btn{justify-content:center;}
   </style>
 </head>
@@ -56,138 +26,146 @@
 <div class="page-wrap">
   <div class="topbar">
     <button class="icon-btn" onclick="history.back()">&#8592;</button>
-    <span class="topbar-title">Dish Detail</span>
+    <span class="topbar-title" id="topbar-name">Dish Detail</span>
     <button class="icon-btn light" onclick="editDish()" title="Edit">✏️</button>
   </div>
 </div>
 
-<!-- Hero -->
-<div class="dish-hero page-wrap">
+<!-- Hero skeleton -->
+<div class="dish-hero page-wrap" id="dish-hero">
   <div class="meta">
-    <span class="badge badge-protein" id="dish-type-badge">Protein</span>
-    <span class="cuisine-tag" id="dish-cuisine">Japanese</span>
+    <div class="skeleton" style="width:70px;height:22px;border-radius:20px;"></div>
+    <div class="skeleton" style="width:60px;height:14px;border-radius:4px;margin-left:8px;"></div>
   </div>
-  <h1 id="dish-name">Salmon Fillet</h1>
+  <div class="skeleton" style="width:200px;height:28px;border-radius:6px;"></div>
 </div>
 
-<!-- Content -->
 <div class="hero-curve">
   <div class="page-wrap">
     <div class="content">
-
-      <!-- Action buttons -->
       <div class="action-row fade-up">
         <button class="btn btn-outline" onclick="editIngredients()">✏️ Edit Ingredients</button>
-        <button class="btn btn-outline" id="recipe-btn" onclick="viewRecipe()" disabled>📖 View Recipe</button>
+        <button class="btn btn-outline" id="recipe-btn" disabled>📖 View Recipe</button>
       </div>
-
       <div class="divider"></div>
 
-      <!-- Ingredients by category -->
-      <div id="ingredients-container" class="fade-up delay-1">
-
-        <!-- Meat -->
-        <div class="ingredient-section">
-          <p class="ingredient-section-title">🥩 Meat</p>
-          <div class="list-block">
-            <div class="ingredient-row">
-              <span class="name">Salmon</span>
-              <span class="ing-type type-meat">Meat</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Vegetable -->
-        <div class="ingredient-section">
-          <p class="ingredient-section-title">🥦 Vegetable</p>
-          <div class="list-block">
-            <div class="ingredient-row">
-              <span class="name">Bok Choy</span>
-              <span class="ing-type type-vegetable">Vegetable</span>
-            </div>
-            <div class="ingredient-row">
-              <span class="name">Spring Onion</span>
-              <span class="ing-type type-vegetable">Vegetable</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Others -->
-        <div class="ingredient-section">
-          <p class="ingredient-section-title">✨ Others</p>
-          <div class="list-block">
-            <div class="ingredient-row">
-              <span class="name">Soy Sauce</span>
-              <span class="ing-type type-others">Others</span>
-            </div>
-            <div class="ingredient-row">
-              <span class="name">Sesame Oil</span>
-              <span class="ing-type type-others">Others</span>
-            </div>
-          </div>
-        </div>
-
+      <!-- Ingredients skeleton -->
+      <div id="ingredients-skeleton">
+        <div class="skeleton skel-line medium mb-8"></div>
+        <div class="skel-block"><div class="skel-row"><div style="flex:1"><div class="skeleton skel-line medium"></div></div></div></div>
       </div>
 
-      <!-- No ingredients fallback -->
+      <div id="ingredients-container" style="display:none;" class="fade-up delay-1"></div>
       <div class="empty-state" id="no-ingredients" style="display:none;">
         <div class="empty-icon">🥗</div>
         <p>No ingredients added yet.<br/>Tap <strong>Edit Ingredients</strong> to add some.</p>
       </div>
 
+      <div style="margin-top:20px;padding-bottom:12px;" class="fade-up delay-2">
+        <button class="btn btn-danger btn-block" onclick="deleteDish()">🗑 Delete Dish</button>
+      </div>
     </div>
   </div>
 </div>
 
-<!-- BOTTOM NAV -->
-<nav class="bottom-nav">
-  <button class="nav-item" onclick="window.location='index.html'"><span class="nav-icon">🏠</span>Home</button>
-  <button class="nav-item active" onclick="window.location='dishes.html'"><span class="nav-icon">🍽</span>Dishes</button>
-  <button class="nav-item" onclick="window.location='meals.html'"><span class="nav-icon">📅</span>Meals</button>
-  <button class="nav-item" onclick="window.location='groceries.html'"><span class="nav-icon">🛒</span>Groceries</button>
-</nav>
+<nav class="bottom-nav" id="bottom-nav"></nav>
+<div class="toast" id="toast"></div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="supabase.js"></script>
+<script src="auth.js"></script>
+<script src="nav.js"></script>
 <script>
-  /* ── Load dish data from URL params ── */
+  renderNav('dishes');
+
   const params = new URLSearchParams(window.location.search);
   const dishId = params.get('id');
 
-  /* Sample data — replace with Supabase fetch by dishId */
-  const sampleDish = {
-    id: dishId || 4,
-    name: 'Salmon Fillet',
-    cuisine: 'Japanese',
-    dish_type: 'Protein',
-    recipe_ref: 'https://example.com/salmon-recipe',
-  };
+  const TYPE_ICON  = {Meat:'🥩',Vegetable:'🥦',Rice:'🍚',Noodle:'🍜',Others:'✨'};
+  const TYPE_CLASS = {Meat:'type-meat',Vegetable:'type-vegetable',Rice:'type-rice',Noodle:'type-noodle',Others:'type-others'};
+  const BADGE_CLS  = {Protein:'badge-protein',Carb:'badge-carb',Greens:'badge-greens',Others:'badge-others'};
 
-  // Populate hero
-  document.getElementById('dish-name').textContent = sampleDish.name;
-  document.getElementById('dish-cuisine').textContent = sampleDish.cuisine;
+  let dish = null;
 
-  const badge = document.getElementById('dish-type-badge');
-  const typeMap = { Protein:'badge-protein', Carb:'badge-carb', Greens:'badge-greens', Others:'badge-others' };
-  badge.textContent = sampleDish.dish_type;
-  badge.className = `badge ${typeMap[sampleDish.dish_type] || 'badge-others'}`;
-
-  // Recipe button
-  const recipeBtn = document.getElementById('recipe-btn');
-  if(sampleDish.recipe_ref){
-    recipeBtn.disabled = false;
-    recipeBtn.style.opacity = '1';
+  function showToast(msg,isErr=false){
+    const t=document.getElementById('toast');
+    t.textContent=msg;t.className='toast'+(isErr?' error':'');
+    t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800);
   }
 
-  function viewRecipe(){
-    if(sampleDish.recipe_ref) window.open(sampleDish.recipe_ref, '_blank');
+  function renderHero(d){
+    document.getElementById('topbar-name').textContent = d.dish_name;
+    document.getElementById('dish-hero').innerHTML = `
+      <div class="meta">
+        <span class="badge ${BADGE_CLS[d.dish_type]||'badge-others'}">${d.dish_type}</span>
+        <span class="cuisine-tag">${d.cuisine||''}</span>
+      </div>
+      <h1>${d.dish_name}</h1>`;
+
+    const recipeBtn = document.getElementById('recipe-btn');
+    if(d.recipe_ref){
+      recipeBtn.disabled=false;
+      recipeBtn.onclick=()=>window.open(d.recipe_ref,'_blank');
+    }
   }
 
-  function editIngredients(){
-    window.location = `dish-add.html?id=${sampleDish.id}&edit=1`;
+  function renderIngredients(rows){
+    document.getElementById('ingredients-skeleton').style.display='none';
+    if(!rows||!rows.length){
+      document.getElementById('no-ingredients').style.display='';
+      return;
+    }
+    // group by ingredient_type
+    const groups={};
+    rows.forEach(r=>{
+      const ing = r.ingredients;
+      if(!ing) return;
+      const t=ing.ingredient_type||'Others';
+      if(!groups[t]) groups[t]=[];
+      groups[t].push(ing);
+    });
+    const ORDER=['Meat','Vegetable','Rice','Noodle','Others'];
+    const html=ORDER.filter(t=>groups[t]).map(t=>`
+      <div class="ingredient-section">
+        <p class="ingredient-section-title">${TYPE_ICON[t]||'✨'} ${t}</p>
+        <div class="list-block">
+          ${groups[t].map(ing=>`
+            <div class="ingredient-row">
+              <span class="name">${ing.ingredient_name}</span>
+              <span class="ing-type ${TYPE_CLASS[t]||'type-others'}">${t}</span>
+            </div>`).join('')}
+        </div>
+      </div>`).join('');
+    document.getElementById('ingredients-container').innerHTML=html;
+    document.getElementById('ingredients-container').style.display='';
   }
 
-  function editDish(){
-    window.location = `dish-add.html?id=${sampleDish.id}&edit=1`;
+  function editIngredients(){ window.location=`dish-add.html?id=${dishId}&edit=1`; }
+  function editDish()       { window.location=`dish-add.html?id=${dishId}&edit=1`; }
+
+  async function deleteDish(){
+    if(!confirm(`Delete "${dish?.dish_name}"? This cannot be undone.`)) return;
+    const {error} = await db.from('dishes').delete().eq('id',dishId);
+    if(error){ showToast('Delete failed: '+error.message,true); return; }
+    window.location='dishes.html';
   }
+
+  (async()=>{
+    const user = await requireAuth();
+    if(!user) return;
+    if(!dishId){ window.location='dishes.html'; return; }
+
+    const {data,error} = await db
+      .from('dishes')
+      .select('id,dish_name,cuisine,dish_type,recipe_ref,dish_ingredients(ingredient_id,ingredients(id,ingredient_name,ingredient_type))')
+      .eq('id',dishId)
+      .single();
+
+    if(error||!data){ showToast('Could not load dish',true); return; }
+    dish=data;
+    renderHero(data);
+    renderIngredients(data.dish_ingredients||[]);
+  })();
 </script>
 </body>
 </html>

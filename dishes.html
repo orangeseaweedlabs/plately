@@ -6,44 +6,22 @@
   <title>MealKit — Dishes</title>
   <link rel="stylesheet" href="styles.css"/>
   <style>
-    .filter-bar{
-      display:flex;gap:8px;overflow-x:auto;
-      padding:12px 16px;scrollbar-width:none;
-      border-bottom:1.5px solid var(--border);
-      background:var(--bg);
-      position:sticky;top:60px;z-index:90;
-    }
+    .filter-bar{display:flex;gap:8px;overflow-x:auto;padding:10px 16px;scrollbar-width:none;border-bottom:1.5px solid var(--border);background:var(--bg);position:sticky;top:60px;z-index:90;}
     .filter-bar::-webkit-scrollbar{display:none;}
-    .filter-chip{
-      white-space:nowrap;
-      padding:6px 16px;border-radius:30px;
-      font-size:.78rem;font-weight:700;
-      border:2px solid var(--border);
-      background:#fff;color:var(--dark-60);
-      cursor:pointer;transition:all .18s;flex-shrink:0;
-    }
+    .filter-chip{white-space:nowrap;padding:6px 16px;border-radius:30px;font-size:.78rem;font-weight:700;border:2px solid var(--border);background:#fff;color:var(--dark-60);cursor:pointer;transition:all .18s;flex-shrink:0;}
     .filter-chip.active{background:var(--dark);color:var(--bg);border-color:var(--dark);}
     .filter-chip:hover:not(.active){background:var(--surface);}
-
-    .dish-icon{
-      width:42px;height:42px;border-radius:12px;
-      display:flex;align-items:center;justify-content:center;
-      font-size:1.3rem;flex-shrink:0;
-    }
+    .dish-icon{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0;}
     .dish-icon.protein{background:#fff3e0;}
     .dish-icon.carb   {background:#fffbdd;}
     .dish-icon.greens {background:var(--green-light);}
     .dish-icon.others {background:var(--surface);}
-
-    .cuisine-dot{
-      width:6px;height:6px;border-radius:50%;
-      display:inline-block;margin-right:4px;
-    }
-    .cuisine-western  {background:#357af7;}
-    .cuisine-italian  {background:#e05a00;}
-    .cuisine-chinese  {background:#d42020;}
-    .cuisine-japanese {background:#5050e0;}
-    .cuisine-korean   {background:#c4407a;}
+    .cuisine-dot{width:6px;height:6px;border-radius:50%;display:inline-block;margin-right:4px;}
+    .cuisine-Western  {background:#357af7;}
+    .cuisine-Italian  {background:#e05a00;}
+    .cuisine-Chinese  {background:#d42020;}
+    .cuisine-Japanese {background:#5050e0;}
+    .cuisine-Korean   {background:#c4407a;}
   </style>
 </head>
 <body>
@@ -51,155 +29,127 @@
 <div class="page-wrap">
   <div class="topbar">
     <span class="topbar-logo">meal<span>kit</span></span>
-    <span class="topbar-title" style="flex:0"></span>
+    <span class="topbar-title"></span>
     <button class="icon-btn light" onclick="toggleSearch()" title="Search">🔍</button>
+    <span id="user-avatar"></span>
   </div>
 </div>
 
-<!-- Search bar (hidden by default) -->
+<!-- Search bar -->
 <div class="page-wrap" id="search-bar" style="display:none;padding:8px 16px;background:var(--bg);border-bottom:1.5px solid var(--border);">
-  <input class="form-control" type="text" placeholder="Search dishes…" id="search-input" oninput="filterDishes()"/>
+  <input class="form-control" type="text" placeholder="Search dishes…" id="search-input" oninput="applyFilter()"/>
 </div>
 
-<!-- Filter chips -->
-<div class="filter-bar" id="filter-bar">
-  <button class="filter-chip active" data-type="all" onclick="setFilter(this,'all')">All</button>
-  <button class="filter-chip" data-type="Protein" onclick="setFilter(this,'Protein')">🥩 Protein</button>
-  <button class="filter-chip" data-type="Carb" onclick="setFilter(this,'Carb')">🍚 Carb</button>
-  <button class="filter-chip" data-type="Greens" onclick="setFilter(this,'Greens')">🥦 Greens</button>
-  <button class="filter-chip" data-type="Others" onclick="setFilter(this,'Others')">✨ Others</button>
+<!-- Filter -->
+<div class="filter-bar">
+  <button class="filter-chip active" onclick="setFilter(this,'all')">All</button>
+  <button class="filter-chip" onclick="setFilter(this,'Protein')">🥩 Protein</button>
+  <button class="filter-chip" onclick="setFilter(this,'Carb')">🍚 Carb</button>
+  <button class="filter-chip" onclick="setFilter(this,'Greens')">🥦 Greens</button>
+  <button class="filter-chip" onclick="setFilter(this,'Others')">✨ Others</button>
 </div>
 
-<!-- Content -->
 <div class="page-wrap">
   <div class="content">
-    <div class="list-block fade-up" id="dishes-list">
-
-      <!-- Sample dishes — replace with Supabase data -->
-      <div class="list-item" data-type="Protein" data-name="Grilled Chicken" onclick="window.location='dish-detail.html?id=1'">
-        <div class="dish-icon protein">🍗</div>
-        <div class="list-item-body">
-          <div class="list-item-title">Grilled Chicken</div>
-          <div class="list-item-sub">
-            <span class="cuisine-dot cuisine-western"></span>Western &bull;
-            <span class="badge badge-protein" style="font-size:.65rem;padding:2px 7px;">Protein</span>
-          </div>
-        </div>
-        <span class="list-item-arrow">›</span>
-      </div>
-
-      <div class="list-item" data-type="Carb" data-name="Steamed Rice" onclick="window.location='dish-detail.html?id=2'">
-        <div class="dish-icon carb">🍚</div>
-        <div class="list-item-body">
-          <div class="list-item-title">Steamed Rice</div>
-          <div class="list-item-sub">
-            <span class="cuisine-dot cuisine-chinese"></span>Chinese &bull;
-            <span class="badge badge-carb" style="font-size:.65rem;padding:2px 7px;">Carb</span>
-          </div>
-        </div>
-        <span class="list-item-arrow">›</span>
-      </div>
-
-      <div class="list-item" data-type="Greens" data-name="Stir-fried Spinach" onclick="window.location='dish-detail.html?id=3'">
-        <div class="dish-icon greens">🥬</div>
-        <div class="list-item-body">
-          <div class="list-item-title">Stir-fried Spinach</div>
-          <div class="list-item-sub">
-            <span class="cuisine-dot cuisine-chinese"></span>Chinese &bull;
-            <span class="badge badge-greens" style="font-size:.65rem;padding:2px 7px;">Greens</span>
-          </div>
-        </div>
-        <span class="list-item-arrow">›</span>
-      </div>
-
-      <div class="list-item" data-type="Protein" data-name="Salmon Fillet" onclick="window.location='dish-detail.html?id=4'">
-        <div class="dish-icon protein">🐟</div>
-        <div class="list-item-body">
-          <div class="list-item-title">Salmon Fillet</div>
-          <div class="list-item-sub">
-            <span class="cuisine-dot cuisine-japanese"></span>Japanese &bull;
-            <span class="badge badge-protein" style="font-size:.65rem;padding:2px 7px;">Protein</span>
-          </div>
-        </div>
-        <span class="list-item-arrow">›</span>
-      </div>
-
-      <div class="list-item" data-type="Carb" data-name="Udon Noodles" onclick="window.location='dish-detail.html?id=5'">
-        <div class="dish-icon carb">🍜</div>
-        <div class="list-item-body">
-          <div class="list-item-title">Udon Noodles</div>
-          <div class="list-item-sub">
-            <span class="cuisine-dot cuisine-japanese"></span>Japanese &bull;
-            <span class="badge badge-carb" style="font-size:.65rem;padding:2px 7px;">Carb</span>
-          </div>
-        </div>
-        <span class="list-item-arrow">›</span>
-      </div>
-
-      <div class="list-item" data-type="Others" data-name="Miso Soup" onclick="window.location='dish-detail.html?id=6'">
-        <div class="dish-icon others">🍵</div>
-        <div class="list-item-body">
-          <div class="list-item-title">Miso Soup</div>
-          <div class="list-item-sub">
-            <span class="cuisine-dot cuisine-japanese"></span>Japanese &bull;
-            <span class="badge badge-others" style="font-size:.65rem;padding:2px 7px;">Others</span>
-          </div>
-        </div>
-        <span class="list-item-arrow">›</span>
-      </div>
-
+    <!-- Skeleton -->
+    <div class="list-block" id="skeleton-list">
+      <div class="skel-row"><div class="skeleton skel-circle"></div><div style="flex:1"><div class="skeleton skel-line medium"></div><div class="skeleton skel-line short mt-8"></div></div></div>
+      <div class="skel-row"><div class="skeleton skel-circle"></div><div style="flex:1"><div class="skeleton skel-line medium"></div><div class="skeleton skel-line short mt-8"></div></div></div>
+      <div class="skel-row"><div class="skeleton skel-circle"></div><div style="flex:1"><div class="skeleton skel-line medium"></div><div class="skeleton skel-line short mt-8"></div></div></div>
     </div>
 
-    <!-- Empty state (hidden by default) -->
+    <div class="list-block fade-up" id="dishes-list" style="display:none;"></div>
+
     <div class="empty-state" id="empty-state" style="display:none;">
       <div class="empty-icon">🍽️</div>
       <p>No dishes found.<br/>Tap <strong>+</strong> to add your first dish.</p>
     </div>
-
   </div>
 </div>
 
-<!-- FAB -->
 <button class="fab" onclick="window.location='dish-add.html'" title="Add Dish">＋</button>
+<nav class="bottom-nav" id="bottom-nav"></nav>
+<div class="toast" id="toast"></div>
 
-<!-- BOTTOM NAV -->
-<nav class="bottom-nav">
-  <button class="nav-item" onclick="window.location='index.html'"><span class="nav-icon">🏠</span>Home</button>
-  <button class="nav-item active" onclick="window.location='dishes.html'"><span class="nav-icon">🍽</span>Dishes</button>
-  <button class="nav-item" onclick="window.location='meals.html'"><span class="nav-icon">📅</span>Meals</button>
-  <button class="nav-item" onclick="window.location='groceries.html'"><span class="nav-icon">🛒</span>Groceries</button>
-</nav>
-
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="supabase.js"></script>
+<script src="auth.js"></script>
+<script src="nav.js"></script>
 <script>
+  renderNav('dishes');
+
+  const TYPE_ICON = {Protein:'🥩',Carb:'🍚',Greens:'🥦',Others:'✨'};
+  const BADGE_CLS = {Protein:'badge-protein',Carb:'badge-carb',Greens:'badge-greens',Others:'badge-others'};
+
+  let allDishes = [];
   let activeFilter = 'all';
 
-  function setFilter(el, type){
-    document.querySelectorAll('.filter-chip').forEach(c=>c.classList.remove('active'));
-    el.classList.add('active');
-    activeFilter = type;
-    filterDishes();
+  function showToast(msg,isErr=false){
+    const t=document.getElementById('toast');
+    t.textContent=msg;t.className='toast'+(isErr?' error':'');
+    t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800);
   }
 
-  function filterDishes(){
-    const query = (document.getElementById('search-input')?.value||'').toLowerCase();
-    const items = document.querySelectorAll('#dishes-list .list-item');
-    let visible = 0;
-    items.forEach(item=>{
-      const typeMatch = activeFilter==='all' || item.dataset.type===activeFilter;
-      const nameMatch = !query || item.dataset.name.toLowerCase().includes(query);
-      const show = typeMatch && nameMatch;
-      item.style.display = show ? '' : 'none';
-      if(show) visible++;
+  function setFilter(el,type){
+    document.querySelectorAll('.filter-chip').forEach(c=>c.classList.remove('active'));
+    el.classList.add('active');
+    activeFilter=type;
+    applyFilter();
+  }
+
+  function applyFilter(){
+    const q=(document.getElementById('search-input')?.value||'').toLowerCase();
+    const filtered=allDishes.filter(d=>{
+      const typeOk = activeFilter==='all' || d.dish_type===activeFilter;
+      const nameOk = !q || d.dish_name.toLowerCase().includes(q);
+      return typeOk && nameOk;
     });
-    document.getElementById('empty-state').style.display = visible===0 ? '' : 'none';
-    document.getElementById('dishes-list').style.display = visible===0 ? 'none' : '';
+    renderList(filtered);
+  }
+
+  function renderList(dishes){
+    const list=document.getElementById('dishes-list');
+    const empty=document.getElementById('empty-state');
+    if(!dishes.length){
+      list.style.display='none'; empty.style.display=''; return;
+    }
+    empty.style.display='none'; list.style.display='';
+    list.innerHTML=dishes.map(d=>`
+      <div class="list-item" onclick="window.location='dish-detail.html?id=${d.id}'">
+        <div class="dish-icon ${(d.dish_type||'').toLowerCase()}">${TYPE_ICON[d.dish_type]||'🍴'}</div>
+        <div class="list-item-body">
+          <div class="list-item-title">${d.dish_name}</div>
+          <div class="list-item-sub">
+            <span class="cuisine-dot cuisine-${d.cuisine||''}"></span>${d.cuisine||'—'} &bull;
+            <span class="badge ${BADGE_CLS[d.dish_type]||'badge-others'}" style="font-size:.65rem;padding:2px 7px;">${d.dish_type}</span>
+          </div>
+        </div>
+        <span class="list-item-arrow">›</span>
+      </div>`).join('');
   }
 
   function toggleSearch(){
-    const bar = document.getElementById('search-bar');
-    bar.style.display = bar.style.display==='none' ? '' : 'none';
+    const bar=document.getElementById('search-bar');
+    bar.style.display=bar.style.display==='none'?'':'none';
     if(bar.style.display!=='none') document.getElementById('search-input').focus();
   }
+
+  (async()=>{
+    const user = await requireAuth();
+    if(!user) return;
+    renderAvatar(user);
+
+    const {data,error} = await db
+      .from('dishes')
+      .select('id,dish_name,cuisine,dish_type')
+      .order('dish_name');
+
+    document.getElementById('skeleton-list').style.display='none';
+
+    if(error){ showToast('Could not load dishes',true); return; }
+    allDishes = data||[];
+    applyFilter();
+  })();
 </script>
 </body>
 </html>

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>MealKit — Sign In</title>
+  <link rel="stylesheet" href="styles.css"/>
+  <style>
+    body{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:24px;padding-bottom:24px;}
+    .login-wrap{width:100%;max-width:380px;text-align:center;}
+
+    .login-logo{
+      font-family:'Archivo Black',sans-serif;font-size:2rem;letter-spacing:-.5px;
+      margin-bottom:8px;
+    }
+    .login-logo span{color:var(--green);}
+    .login-tagline{font-size:.9rem;color:var(--dark-60);margin-bottom:40px;line-height:1.6;}
+
+    .login-card{
+      background:#fff;border-radius:var(--r);
+      border:1.5px solid var(--border);
+      padding:28px 24px;
+      box-shadow:var(--shadow-md);
+      margin-bottom:20px;
+    }
+    .login-card h2{font-size:1.1rem;margin-bottom:6px;}
+    .login-card p{font-size:.83rem;color:var(--dark-60);margin-bottom:24px;line-height:1.55;}
+
+    .btn-google{
+      width:100%;padding:13px 20px;
+      border-radius:var(--r-sm);border:2px solid var(--border);
+      background:#fff;color:var(--dark);
+      font-size:.9rem;font-weight:700;
+      display:flex;align-items:center;justify-content:center;gap:10px;
+      cursor:pointer;transition:all .18s;font-family:'Plus Jakarta Sans',sans-serif;
+    }
+    .btn-google:hover{background:var(--surface);border-color:var(--dark-20);}
+    .btn-google svg{width:20px;height:20px;flex-shrink:0;}
+
+    .divider-text{
+      display:flex;align-items:center;gap:10px;
+      margin:18px 0;color:var(--dark-60);font-size:.78rem;
+    }
+    .divider-text::before,.divider-text::after{content:'';flex:1;height:1.5px;background:var(--border);}
+
+    .error-msg{
+      background:var(--pink-light);color:var(--pink-dark);
+      border-radius:var(--r-sm);padding:10px 14px;
+      font-size:.82rem;font-weight:600;
+      margin-bottom:16px;display:none;
+    }
+
+    .loading-overlay{
+      position:fixed;inset:0;background:var(--bg);
+      display:flex;flex-direction:column;align-items:center;justify-content:center;
+      gap:14px;z-index:999;
+    }
+    .spinner{
+      width:36px;height:36px;border:3px solid var(--border);
+      border-top-color:var(--dark);border-radius:50%;
+      animation:spin .7s linear infinite;
+    }
+    @keyframes spin{to{transform:rotate(360deg);}}
+
+    .footer-note{font-size:.75rem;color:var(--dark-60);line-height:1.6;}
+  </style>
+</head>
+<body>
+
+<!-- Loading overlay (shown during auth redirect) -->
+<div class="loading-overlay" id="loading-overlay">
+  <div class="spinner"></div>
+  <p style="font-size:.85rem;color:var(--dark-60);">Signing you in…</p>
+</div>
+
+<div class="login-wrap" id="login-ui" style="display:none;">
+  <div class="login-logo">meal<span>kit</span></div>
+  <p class="login-tagline">Plan your meals,<br/>mix proteins, carbs &amp; greens with ease.</p>
+
+  <div class="login-card">
+    <h2>Welcome back</h2>
+    <p>Sign in to access your personal meal planner.</p>
+
+    <div class="error-msg" id="error-msg">
+      Something went wrong. Please try again.
+    </div>
+
+    <button class="btn-google" id="google-btn" onclick="signInWithGoogle()">
+      <!-- Google "G" logo -->
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+        <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+        <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/>
+        <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+      </svg>
+      Continue with Google
+    </button>
+  </div>
+
+  <p class="footer-note">
+    Your data is private and stored securely in Supabase.<br/>
+    Each account only sees their own meals, dishes and ingredients.
+  </p>
+</div>
+
+<!-- CDN + config -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="supabase.js"></script>
+<script>
+  (async () => {
+    // If already signed in, go straight to home
+    const { data: { session } } = await db.auth.getSession();
+    if (session) {
+      window.location = 'index.html';
+      return;
+    }
+
+    // Handle OAuth redirect — Supabase automatically exchanges the code
+    const hashParams = new URLSearchParams(window.location.hash.slice(1));
+    if (hashParams.get('access_token')) {
+      // Session will be set; just wait for getSession
+      await db.auth.getSession();
+      window.location = 'index.html';
+      return;
+    }
+
+    // Show login UI
+    document.getElementById('loading-overlay').style.display = 'none';
+    document.getElementById('login-ui').style.display = '';
+  })();
+
+  async function signInWithGoogle() {
+    const btn = document.getElementById('google-btn');
+    btn.disabled = true;
+    btn.textContent = 'Redirecting…';
+
+    const { error } = await db.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: window.location.origin + '/index.html',
+      },
+    });
+
+    if (error) {
+      document.getElementById('error-msg').style.display = '';
+      document.getElementById('error-msg').textContent = error.message;
+      btn.disabled = false;
+      btn.innerHTML = `Continue with Google`;
+    }
+  }
+</script>
+</body>
+</html>

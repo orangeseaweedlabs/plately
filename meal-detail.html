@@ -6,60 +6,27 @@
   <title>MealKit — Meal Detail</title>
   <link rel="stylesheet" href="styles.css"/>
   <style>
-    .meal-hero{
-      padding:20px 16px 28px;
-      color:var(--bg);
-    }
+    .meal-hero{padding:20px 16px 28px;color:var(--bg);}
     .meal-hero.breakfast{background:var(--blue-dark);}
     .meal-hero.lunch    {background:var(--green-dark);}
     .meal-hero.dinner   {background:var(--pink-dark);}
-
-    .meal-hero .hero-label{
-      font-size:.72rem;font-weight:700;letter-spacing:.06em;
-      text-transform:uppercase;opacity:.7;margin-bottom:6px;
-    }
+    .meal-hero .hero-label{font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;opacity:.7;margin-bottom:6px;}
     .meal-hero h1{font-size:1.35rem;line-height:1.25;margin-bottom:6px;}
     .meal-hero .hero-date{font-size:.85rem;opacity:.65;}
-
-    .curve-card{
-      background:var(--bg);
-      border-radius:20px 20px 0 0;
-      padding-top:20px;
-      margin-top:-10px;
-    }
-
-    .dish-card{
-      background:#fff;
-      border-radius:var(--r-sm);
-      border:1.5px solid var(--border);
-      padding:14px;
-      margin-bottom:10px;
-      display:flex;align-items:flex-start;gap:12px;
-      cursor:pointer;
-      transition:background .15s;
-    }
+    .curve-card{background:var(--bg);border-radius:20px 20px 0 0;padding-top:20px;margin-top:-10px;}
+    .dish-card{background:#fff;border-radius:var(--r-sm);border:1.5px solid var(--border);padding:14px;margin-bottom:10px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:background .15s;}
     .dish-card:hover{background:var(--surface);}
-    .dish-card-icon{
-      width:44px;height:44px;border-radius:10px;
-      display:flex;align-items:center;justify-content:center;
-      font-size:1.4rem;flex-shrink:0;
-    }
+    .dish-card-icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0;}
     .dish-card-icon.protein{background:#fff3e0;}
     .dish-card-icon.carb   {background:#fffbdd;}
     .dish-card-icon.greens {background:var(--green-light);}
     .dish-card-icon.others {background:var(--surface);}
-
     .dish-card-body{flex:1;min-width:0;}
     .dish-card-name{font-weight:700;font-size:.9rem;}
     .dish-card-meta{font-size:.75rem;color:var(--dark-60);margin-top:3px;}
-    .dish-card-arrow{color:var(--dark-60);font-size:.85rem;align-self:center;}
-
-    .delete-btn{
-      background:transparent;border:none;
-      color:var(--pink-dark);font-size:.85rem;padding:4px;
-      cursor:pointer;opacity:.7;
-    }
-    .delete-btn:hover{opacity:1;}
+    .dish-card-arrow{color:var(--dark-60);font-size:.85rem;}
+    .remove-btn{background:transparent;border:none;color:var(--pink-dark);font-size:.85rem;padding:6px;cursor:pointer;opacity:.65;flex-shrink:0;}
+    .remove-btn:hover{opacity:1;}
   </style>
 </head>
 <body>
@@ -72,128 +39,146 @@
   </div>
 </div>
 
-<!-- Hero -->
-<div class="meal-hero breakfast page-wrap" id="meal-hero">
-  <p class="hero-label" id="meal-type-label">☀️ Breakfast</p>
-  <h1 id="meal-name-display">Grilled Chicken + Steamed Rice + Stir-fried Spinach</h1>
-  <p class="hero-date" id="meal-date-display">Sunday, 29 March 2026</p>
+<!-- Hero (skeleton until loaded) -->
+<div class="meal-hero page-wrap" id="meal-hero" style="background:var(--dark-60);">
+  <div class="skeleton" style="width:90px;height:14px;border-radius:4px;margin-bottom:10px;background:rgba(255,255,255,.2);"></div>
+  <div class="skeleton" style="width:240px;height:24px;border-radius:6px;margin-bottom:8px;background:rgba(255,255,255,.2);"></div>
+  <div class="skeleton" style="width:140px;height:14px;border-radius:4px;background:rgba(255,255,255,.15);"></div>
 </div>
 
-<!-- Dishes in this meal -->
 <div class="curve-card">
   <div class="page-wrap">
     <div class="content">
-
       <div class="section-head fade-up">
         <h2>Dishes in this Meal</h2>
-        <button class="link-btn" onclick="window.location='meal-add.html?id=1&edit=1'">+ Add dish</button>
+        <button class="link-btn" id="add-dish-btn">+ Add dish</button>
       </div>
 
-      <!-- Dish cards — replace with Supabase fetch -->
-      <div id="dishes-container">
-
-        <div class="dish-card fade-up delay-1" onclick="window.location='dish-detail.html?id=1'">
-          <div class="dish-card-icon protein">🍗</div>
-          <div class="dish-card-body">
-            <p class="dish-card-name">Grilled Chicken</p>
-            <p class="dish-card-meta">Western · <span class="badge badge-protein" style="font-size:.65rem;padding:2px 7px;">Protein</span></p>
-          </div>
-          <button class="delete-btn" onclick="removeDish(event,1)" title="Remove">✕</button>
-          <span class="dish-card-arrow">›</span>
-        </div>
-
-        <div class="dish-card fade-up delay-2" onclick="window.location='dish-detail.html?id=2'">
-          <div class="dish-card-icon carb">🍚</div>
-          <div class="dish-card-body">
-            <p class="dish-card-name">Steamed Rice</p>
-            <p class="dish-card-meta">Chinese · <span class="badge badge-carb" style="font-size:.65rem;padding:2px 7px;">Carb</span></p>
-          </div>
-          <button class="delete-btn" onclick="removeDish(event,2)" title="Remove">✕</button>
-          <span class="dish-card-arrow">›</span>
-        </div>
-
-        <div class="dish-card fade-up delay-3" onclick="window.location='dish-detail.html?id=3'">
-          <div class="dish-card-icon greens">🥬</div>
-          <div class="dish-card-body">
-            <p class="dish-card-name">Stir-fried Spinach</p>
-            <p class="dish-card-meta">Chinese · <span class="badge badge-greens" style="font-size:.65rem;padding:2px 7px;">Greens</span></p>
-          </div>
-          <button class="delete-btn" onclick="removeDish(event,3)" title="Remove">✕</button>
-          <span class="dish-card-arrow">›</span>
-        </div>
-
+      <!-- Skeleton -->
+      <div id="dishes-skeleton">
+        <div class="skel-block"><div class="skel-row"><div class="skeleton skel-circle" style="border-radius:10px;"></div><div style="flex:1"><div class="skeleton skel-line medium"></div><div class="skeleton skel-line short mt-8"></div></div></div></div>
       </div>
 
+      <div id="dishes-container" class="fade-up delay-1" style="display:none;"></div>
       <div class="empty-state" id="no-dishes" style="display:none;">
         <div class="empty-icon">🍽️</div>
         <p>No dishes in this meal yet.</p>
       </div>
 
-      <!-- Delete meal -->
-      <div style="margin-top:24px;padding-bottom:12px;" class="fade-up delay-4">
+      <div style="margin-top:24px;padding-bottom:12px;" class="fade-up delay-2">
         <button class="btn btn-danger btn-block" onclick="deleteMeal()">🗑 Delete Meal</button>
       </div>
-
     </div>
   </div>
 </div>
 
-<!-- BOTTOM NAV -->
-<nav class="bottom-nav">
-  <button class="nav-item" onclick="window.location='index.html'"><span class="nav-icon">🏠</span>Home</button>
-  <button class="nav-item" onclick="window.location='dishes.html'"><span class="nav-icon">🍽</span>Dishes</button>
-  <button class="nav-item active" onclick="window.location='meals.html'"><span class="nav-icon">📅</span>Meals</button>
-  <button class="nav-item" onclick="window.location='groceries.html'"><span class="nav-icon">🛒</span>Groceries</button>
-</nav>
+<nav class="bottom-nav" id="bottom-nav"></nav>
+<div class="toast" id="toast"></div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="supabase.js"></script>
+<script src="auth.js"></script>
+<script src="nav.js"></script>
 <script>
+  renderNav('meals');
+
   const params = new URLSearchParams(window.location.search);
   const mealId = params.get('id');
 
-  /* Sample — replace with Supabase fetch by mealId */
-  const meal = {
-    id: mealId,
-    meal_type: 'Breakfast',
-    meal_date: new Date().toLocaleDateString('en-SG',{weekday:'long',day:'numeric',month:'long',year:'numeric'}),
-    dishes: [
-      {id:1,name:'Grilled Chicken',cuisine:'Western',dish_type:'Protein'},
-      {id:2,name:'Steamed Rice',  cuisine:'Chinese', dish_type:'Carb'},
-      {id:3,name:'Stir-fried Spinach',cuisine:'Chinese',dish_type:'Greens'},
-    ]
-  };
+  const DISH_ORDER = ['Protein','Carb','Greens','Others'];
+  const TYPE_ICON  = {Protein:'🥩',Carb:'🍚',Greens:'🥦',Others:'✨'};
+  const BADGE_CLS  = {Protein:'badge-protein',Carb:'badge-carb',Greens:'badge-greens',Others:'badge-others'};
+  const TYPE_LABELS= {Breakfast:'☀️ Breakfast',Lunch:'🌤 Lunch',Dinner:'🌙 Dinner'};
+  let meal = null;
 
-  // Build auto meal name from Protein + Carb + Greens + Others
-  const typeOrder = ['Protein','Carb','Greens','Others'];
-  const byType = {};
-  meal.dishes.forEach(d=>{ if(!byType[d.dish_type]) byType[d.dish_type]=[]; byType[d.dish_type].push(d.name); });
-  const parts = typeOrder.filter(t=>byType[t]).map(t=>byType[t].join(' & '));
-  document.getElementById('meal-name-display').textContent = parts.join(' + ') || '(No dishes)';
+  function showToast(msg,isErr=false){
+    const t=document.getElementById('toast');
+    t.textContent=msg;t.className='toast'+(isErr?' error':'');
+    t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800);
+  }
 
-  const typeLabels = { Breakfast:'☀️ Breakfast', Lunch:'🌤 Lunch', Dinner:'🌙 Dinner' };
-  document.getElementById('meal-type-label').textContent = typeLabels[meal.meal_type] || meal.meal_type;
-  document.getElementById('meal-date-display').textContent = meal.meal_date;
+  function buildMealName(dishes){
+    const byType={};
+    (dishes||[]).forEach(d=>{
+      const t=d.dishes?.dish_type||d.dish_type;
+      const n=d.dishes?.dish_name||d.dish_name;
+      if(!byType[t]) byType[t]=[]; byType[t].push(n);
+    });
+    return DISH_ORDER.filter(t=>byType[t]).map(t=>byType[t].join(' & ')).join(' + ')||'(No dishes)';
+  }
 
-  const hero = document.getElementById('meal-hero');
-  hero.classList.remove('breakfast','lunch','dinner');
-  hero.classList.add(meal.meal_type.toLowerCase());
+  function renderHero(m){
+    const hero = document.getElementById('meal-hero');
+    hero.className = `meal-hero page-wrap ${m.meal_type.toLowerCase()}`;
+    const name = buildMealName(m.meal_dishes||[]);
+    const dateStr = new Date(m.meal_date+'T00:00:00').toLocaleDateString('en-SG',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+    hero.innerHTML = `
+      <p class="hero-label">${TYPE_LABELS[m.meal_type]||m.meal_type}</p>
+      <h1>${name}</h1>
+      <p class="hero-date">${dateStr}</p>`;
+  }
 
-  function removeDish(e, dishId){
+  function renderDishes(dishes){
+    document.getElementById('dishes-skeleton').style.display='none';
+    const container = document.getElementById('dishes-container');
+    if(!dishes||!dishes.length){
+      document.getElementById('no-dishes').style.display=''; return;
+    }
+    container.style.display='';
+    container.innerHTML = dishes.map(r=>{
+      const d = r.dishes||r;
+      const typeClass = (d.dish_type||'').toLowerCase();
+      return `<div class="dish-card" onclick="window.location='dish-detail.html?id=${d.id}'">
+        <div class="dish-card-icon ${typeClass}">${TYPE_ICON[d.dish_type]||'🍴'}</div>
+        <div class="dish-card-body">
+          <p class="dish-card-name">${d.dish_name}</p>
+          <p class="dish-card-meta">${d.cuisine||''} · <span class="badge ${BADGE_CLS[d.dish_type]||'badge-others'}" style="font-size:.65rem;padding:2px 7px;">${d.dish_type}</span></p>
+        </div>
+        <button class="remove-btn" onclick="removeDish(event,'${r.dish_id||d.id}')" title="Remove">✕</button>
+        <span class="dish-card-arrow">›</span>
+      </div>`;
+    }).join('');
+  }
+
+  async function removeDish(e, dId){
     e.stopPropagation();
     if(!confirm('Remove this dish from the meal?')) return;
-    /* TODO: DELETE from Supabase meal_dishes */
-    e.target.closest('.dish-card').remove();
-    if(document.querySelectorAll('#dishes-container .dish-card').length===0){
-      document.getElementById('no-dishes').style.display='';
-    }
+    const {error} = await db.from('meal_dishes').delete()
+      .eq('meal_id',mealId).eq('dish_id',dId);
+    if(error){ showToast('Could not remove dish',true); return; }
+    showToast('Dish removed');
+    // re-fetch
+    loadMeal();
   }
 
-  function editMeal(){ window.location = `meal-add.html?id=${meal.id}&edit=1`; }
+  function editMeal(){ window.location=`meal-add.html?id=${mealId}&edit=1`; }
 
-  function deleteMeal(){
-    if(!confirm('Delete this meal?')) return;
-    /* TODO: DELETE from Supabase meals */
-    window.location = 'meals.html';
+  async function deleteMeal(){
+    if(!confirm('Delete this meal? This cannot be undone.')) return;
+    const {error} = await db.from('meals').delete().eq('id',mealId);
+    if(error){ showToast('Delete failed: '+error.message,true); return; }
+    window.location='meals.html';
   }
+
+  async function loadMeal(){
+    const {data,error} = await db
+      .from('meals')
+      .select('id,meal_date,meal_type,meal_dishes(dish_id,dishes(id,dish_name,cuisine,dish_type))')
+      .eq('id',mealId)
+      .single();
+    if(error||!data){ showToast('Could not load meal',true); return; }
+    meal=data;
+    renderHero(data);
+    renderDishes(data.meal_dishes||[]);
+    document.getElementById('add-dish-btn').onclick=()=>window.location=`meal-add.html?id=${mealId}&edit=1`;
+  }
+
+  (async()=>{
+    const user = await requireAuth();
+    if(!user) return;
+    if(!mealId){ window.location='meals.html'; return; }
+    loadMeal();
+  })();
 </script>
 </body>
 </html>

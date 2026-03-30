@@ -93,27 +93,28 @@ h3{font-size:.95rem;}
 .icon-btn:hover{opacity:.8;}
 .icon-btn.light{background:var(--surface);color:var(--dark);}
 
-/* ── Bottom Nav ─────────────────────────────────────── */
+/* ── Bottom Nav (5 items) ───────────────────────────── */
 .bottom-nav{
   position:fixed;bottom:0;z-index:200;
   background:var(--dark);
   height:var(--nav-h);
   display:flex;align-items:center;justify-content:space-around;
-  padding:0 4px;
+  padding:0 2px;
   width:100%;max-width:var(--max-w);
   left:50%;transform:translateX(-50%);
   border-radius:20px 20px 0 0;
 }
 .nav-item{
-  display:flex;flex-direction:column;align-items:center;gap:4px;
-  padding:8px 10px;
+  display:flex;flex-direction:column;align-items:center;gap:3px;
+  padding:6px 2px;
   color:rgba(255,250,240,.4);
   border:none;background:none;
-  font-size:.65rem;font-weight:600;letter-spacing:.04em;
+  font-size:.58rem;font-weight:700;letter-spacing:.03em;
   text-transform:uppercase;
   transition:color .2s;flex:1;
+  white-space:nowrap;
 }
-.nav-item .nav-icon{font-size:1.25rem;line-height:1;}
+.nav-item .nav-icon{font-size:1.15rem;line-height:1;}
 .nav-item.active{color:var(--bg);}
 .nav-item:hover{color:rgba(255,250,240,.75);}
 
@@ -171,7 +172,6 @@ h3{font-size:.95rem;}
 .chip.selected.chip-orange {background:#e06000;color:#fff;border-color:#b84500;}
 .chip.selected.chip-dark   {background:var(--dark);color:var(--bg);border-color:var(--dark);}
 .chip:hover{transform:translateY(-1px);box-shadow:0 2px 8px rgba(48,42,44,.1);}
-
 .chip-group{display:flex;flex-wrap:wrap;gap:8px;}
 
 /* ── Buttons ─────────────────────────────────────────── */
@@ -231,6 +231,25 @@ select.form-control{
 .list-item-sub{font-size:.75rem;color:var(--dark-60);margin-top:2px;}
 .list-item-arrow{color:var(--dark-60);font-size:.8rem;flex-shrink:0;}
 
+/* ── Skeleton loader ─────────────────────────────────── */
+.skeleton{
+  background:linear-gradient(90deg,var(--surface) 25%,var(--surface-2) 50%,var(--surface) 75%);
+  background-size:200% 100%;
+  animation:shimmer 1.4s infinite;
+  border-radius:var(--r-xs);
+}
+@keyframes shimmer{0%{background-position:200% 0;}100%{background-position:-200% 0;}}
+.skel-line{height:14px;margin-bottom:8px;}
+.skel-line.short{width:45%;}
+.skel-line.medium{width:70%;}
+.skel-line.full{width:100%;}
+.skel-block{
+  border-radius:var(--r);border:1.5px solid var(--border);
+  padding:16px;background:#fff;margin-bottom:10px;
+}
+.skel-row{display:flex;gap:12px;align-items:center;padding:14px 16px;border-bottom:1.5px solid var(--border);}
+.skel-circle{width:40px;height:40px;border-radius:50%;flex-shrink:0;}
+
 /* ── Calendar ────────────────────────────────────────── */
 .calendar{background:#fff;border-radius:var(--r);border:1.5px solid var(--border);padding:16px;box-shadow:var(--shadow);}
 .cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
@@ -254,9 +273,9 @@ select.form-control{
 .day-num{font-size:.8rem;font-weight:600;margin-bottom:4px;line-height:1;}
 .day-dots{display:flex;gap:2px;justify-content:center;}
 .dot{width:5px;height:5px;border-radius:50%;}
-.dot-breakfast{background:var(--breakfast);}
-.dot-lunch    {background:var(--lunch);}
-.dot-dinner   {background:var(--dinner);}
+.dot-breakfast,.dot-Breakfast{background:var(--breakfast);}
+.dot-lunch,.dot-Lunch        {background:var(--lunch);}
+.dot-dinner,.dot-Dinner      {background:var(--dinner);}
 
 /* ── FAB ─────────────────────────────────────────────── */
 .fab{
@@ -276,6 +295,19 @@ select.form-control{
 .empty-state{text-align:center;padding:48px 24px;color:var(--dark-60);}
 .empty-icon{font-size:2.8rem;margin-bottom:12px;}
 .empty-state p{font-size:.85rem;line-height:1.65;}
+
+/* ── Toast ───────────────────────────────────────────── */
+.toast{
+  position:fixed;bottom:calc(var(--nav-h) + 80px);
+  left:50%;transform:translateX(-50%) translateY(20px);
+  background:var(--dark);color:var(--bg);
+  padding:10px 20px;border-radius:40px;
+  font-size:.82rem;font-weight:600;
+  white-space:nowrap;
+  opacity:0;transition:all .3s;pointer-events:none;z-index:999;
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+.toast.error{background:var(--pink-dark);}
 
 /* ── Toggle ──────────────────────────────────────────── */
 .toggle{

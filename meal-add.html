@@ -6,12 +6,7 @@
   <title>MealKit — Add Meal</title>
   <link rel="stylesheet" href="styles.css"/>
   <style>
-    .preview-banner{
-      border-radius:var(--r);
-      padding:14px 16px;
-      margin-bottom:20px;
-      transition:background .3s;
-    }
+    .preview-banner{border-radius:var(--r);padding:14px 16px;margin-bottom:20px;transition:background .3s;}
     .preview-banner.breakfast{background:var(--blue-light);}
     .preview-banner.lunch    {background:var(--green-light);}
     .preview-banner.dinner   {background:var(--pink-light);}
@@ -19,18 +14,9 @@
     .preview-label{font-size:.7rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;opacity:.65;margin-bottom:4px;}
     .preview-name {font-family:'Archivo Black',sans-serif;font-size:.95rem;line-height:1.3;color:var(--dark);}
     .preview-name.placeholder{opacity:.4;font-family:'Plus Jakarta Sans',sans-serif;font-weight:400;font-size:.85rem;font-style:italic;}
-
     .dish-type-section{margin-bottom:20px;}
-    .dish-type-title{
-      font-size:.75rem;font-weight:700;letter-spacing:.06em;
-      text-transform:uppercase;color:var(--dark-60);
-      margin-bottom:10px;
-      display:flex;align-items:center;gap:6px;
-    }
-    .dish-type-note{
-      font-size:.7rem;font-weight:500;letter-spacing:0;
-      text-transform:none;color:var(--dark-60);opacity:.7;
-    }
+    .dish-type-title{font-size:.75rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--dark-60);margin-bottom:10px;}
+    .chips-loading{font-size:.8rem;color:var(--dark-60);}
   </style>
 </head>
 <body>
@@ -45,7 +31,6 @@
 <div class="page-wrap">
   <div class="content">
 
-    <!-- Date + Meal type -->
     <div class="flex gap-12 fade-up">
       <div class="form-group" style="flex:1">
         <label class="form-label">Date *</label>
@@ -73,136 +58,183 @@
     <div class="fade-up delay-2">
       <p style="font-family:'Archivo Black',sans-serif;font-size:1rem;margin-bottom:4px;">Select Dishes</p>
       <p class="small muted mb-16">Tap chips to add dishes to this meal</p>
-
-      <!-- Protein dishes -->
-      <div class="dish-type-section">
-        <p class="dish-type-title">🥩 Protein</p>
-        <div class="chip-group">
-          <span class="chip chip-orange" data-id="1" data-type="Protein" data-name="Grilled Chicken" onclick="toggleDish(this)">Grilled Chicken</span>
-          <span class="chip chip-orange" data-id="4" data-type="Protein" data-name="Salmon Fillet" onclick="toggleDish(this)">Salmon Fillet</span>
-          <span class="chip chip-orange" data-id="7" data-type="Protein" data-name="Braised Pork" onclick="toggleDish(this)">Braised Pork</span>
-          <span class="chip chip-orange" data-id="8" data-type="Protein" data-name="Scrambled Eggs" onclick="toggleDish(this)">Scrambled Eggs</span>
-        </div>
+      <div id="dish-chips-wrap">
+        <p class="chips-loading">Loading dishes…</p>
       </div>
-
-      <!-- Carb dishes -->
-      <div class="dish-type-section">
-        <p class="dish-type-title">🍚 Carb</p>
-        <div class="chip-group">
-          <span class="chip chip-amber" data-id="2" data-type="Carb" data-name="Steamed Rice" onclick="toggleDish(this)">Steamed Rice</span>
-          <span class="chip chip-amber" data-id="5" data-type="Carb" data-name="Udon Noodles" onclick="toggleDish(this)">Udon Noodles</span>
-          <span class="chip chip-amber" data-id="9" data-type="Carb" data-name="Fried Rice" onclick="toggleDish(this)">Fried Rice</span>
-          <span class="chip chip-amber" data-id="10" data-type="Carb" data-name="Soba Noodles" onclick="toggleDish(this)">Soba Noodles</span>
-        </div>
-      </div>
-
-      <!-- Greens dishes -->
-      <div class="dish-type-section">
-        <p class="dish-type-title">🥦 Greens</p>
-        <div class="chip-group">
-          <span class="chip chip-green" data-id="3" data-type="Greens" data-name="Stir-fried Spinach" onclick="toggleDish(this)">Stir-fried Spinach</span>
-          <span class="chip chip-green" data-id="11" data-type="Greens" data-name="Steamed Broccoli" onclick="toggleDish(this)">Steamed Broccoli</span>
-          <span class="chip chip-green" data-id="12" data-type="Greens" data-name="Bok Choy Stir Fry" onclick="toggleDish(this)">Bok Choy Stir Fry</span>
-        </div>
-      </div>
-
-      <!-- Others dishes -->
-      <div class="dish-type-section">
-        <p class="dish-type-title">✨ Others <span class="dish-type-note">(soups, sides)</span></p>
-        <div class="chip-group">
-          <span class="chip chip-dark" data-id="6" data-type="Others" data-name="Miso Soup" onclick="toggleDish(this)">Miso Soup</span>
-          <span class="chip chip-dark" data-id="13" data-type="Others" data-name="Kimchi" onclick="toggleDish(this)">Kimchi</span>
-          <span class="chip chip-dark" data-id="14" data-type="Others" data-name="Gyoza" onclick="toggleDish(this)">Gyoza</span>
-        </div>
-      </div>
-
     </div>
 
-    <!-- Save button -->
-    <div style="margin-top:8px;padding-bottom:20px;" class="fade-up delay-3">
-      <button class="btn btn-primary btn-block" onclick="saveMeal()">Save Meal</button>
+    <div style="margin-top:20px;padding-bottom:20px;" class="fade-up delay-3">
+      <button class="btn btn-primary btn-block" id="save-btn" onclick="saveMeal()">Save Meal</button>
     </div>
 
   </div>
 </div>
 
-<!-- BOTTOM NAV -->
-<nav class="bottom-nav">
-  <button class="nav-item" onclick="window.location='index.html'"><span class="nav-icon">🏠</span>Home</button>
-  <button class="nav-item" onclick="window.location='dishes.html'"><span class="nav-icon">🍽</span>Dishes</button>
-  <button class="nav-item active" onclick="window.location='meals.html'"><span class="nav-icon">📅</span>Meals</button>
-  <button class="nav-item" onclick="window.location='groceries.html'"><span class="nav-icon">🛒</span>Groceries</button>
-</nav>
+<nav class="bottom-nav" id="bottom-nav"></nav>
+<div class="toast" id="toast"></div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="supabase.js"></script>
+<script src="auth.js"></script>
+<script src="nav.js"></script>
 <script>
-  /* Default date to today */
-  const today = new Date().toISOString().slice(0,10);
-  document.getElementById('meal-date').value = today;
+  renderNav('meals');
 
   const params = new URLSearchParams(window.location.search);
-  if(params.get('edit')==='1') document.getElementById('page-title').textContent = 'Edit Meal';
+  const mealId = params.get('id');
+  const isEdit = params.get('edit') === '1';
+  if(isEdit) document.getElementById('page-title').textContent = 'Edit Meal';
 
-  const selected = {};   // { dish_type: { id, name } }  — one per type for naming
+  // Default date to today
+  document.getElementById('meal-date').value = new Date().toISOString().slice(0,10);
+
+  const DISH_ORDER  = ['Protein','Carb','Greens','Others'];
+  const TYPE_COLOR  = {Protein:'chip-orange',Carb:'chip-amber',Greens:'chip-green',Others:'chip-dark'};
+  const TYPE_ICON   = {Protein:'🥩',Carb:'🍚',Greens:'🥦',Others:'✨'};
+  const TYPE_LABELS = {Breakfast:'☀️ Breakfast Preview',Lunch:'🌤 Lunch Preview',Dinner:'🌙 Dinner Preview'};
+
+  // selected: Map<dish_type, {id, name}>  — one per type drives the meal name
+  // but multi-select is allowed (extra dishes stored too)
+  const selectedDishes = new Map();  // dish_id → {id, name, dish_type}
+
+  function showToast(msg,isErr=false){
+    const t=document.getElementById('toast');
+    t.textContent=msg;t.className='toast'+(isErr?' error':'');
+    t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800);
+  }
+
+  function updatePreview(){
+    const mealType = document.getElementById('meal-type').value;
+    const banner   = document.getElementById('preview-banner');
+    const nameEl   = document.getElementById('preview-name');
+    const labelEl  = document.getElementById('preview-label');
+
+    banner.className = 'preview-banner ' + (mealType ? mealType.toLowerCase() : 'none');
+    labelEl.textContent = TYPE_LABELS[mealType] || 'Meal Preview';
+
+    const byType={};
+    selectedDishes.forEach(d=>{
+      if(!byType[d.dish_type]) byType[d.dish_type]=[];
+      byType[d.dish_type].push(d.name);
+    });
+    const parts = DISH_ORDER.filter(t=>byType[t]).map(t=>byType[t].join(' & '));
+    if(!parts.length){
+      nameEl.textContent='Select dishes below to see meal name…';
+      nameEl.classList.add('placeholder');
+    } else {
+      nameEl.textContent=parts.join(' + ');
+      nameEl.classList.remove('placeholder');
+    }
+  }
 
   function toggleDish(el){
-    const id = el.dataset.id;
+    const id   = el.dataset.id;
     const type = el.dataset.type;
     const name = el.dataset.name;
-    const colorMap = { Protein:'chip-orange', Carb:'chip-amber', Greens:'chip-green', Others:'chip-dark' };
-    const cls = colorMap[type] || 'chip-dark';
+    const cls  = TYPE_COLOR[type]||'chip-dark';
 
-    if(selected[type] && selected[type].id===id){
-      // Deselect
-      delete selected[type];
+    if(selectedDishes.has(id)){
+      selectedDishes.delete(id);
       el.classList.remove('selected');
     } else {
-      // Deselect previous in same type
-      if(selected[type]){
-        const prev = document.querySelector(`.chip[data-id="${selected[type].id}"]`);
-        if(prev) prev.classList.remove('selected');
-      }
-      selected[type] = {id, name};
+      selectedDishes.set(id,{id,name,dish_type:type});
       el.classList.add('selected');
     }
     updatePreview();
   }
 
-  function updatePreview(){
-    const typeOrder = ['Protein','Carb','Greens','Others'];
+  function renderChips(dishes, preselected=new Set()){
+    const wrap=document.getElementById('dish-chips-wrap');
+    if(!dishes.length){ wrap.innerHTML='<p class="small muted">No dishes yet. Add some from the Dishes page first.</p>'; return; }
+
+    const groups={};
+    dishes.forEach(d=>{
+      if(!groups[d.dish_type]) groups[d.dish_type]=[];
+      groups[d.dish_type].push(d);
+    });
+
+    wrap.innerHTML = DISH_ORDER.filter(t=>groups[t]).map(t=>`
+      <div class="dish-type-section">
+        <p class="dish-type-title">${TYPE_ICON[t]} ${t}</p>
+        <div class="chip-group">
+          ${groups[t].map(d=>{
+            const sel = preselected.has(d.id) ? 'selected' : '';
+            if(sel){ selectedDishes.set(d.id,{id:d.id,name:d.dish_name,dish_type:d.dish_type}); }
+            return `<span class="chip ${TYPE_COLOR[t]||'chip-dark'} ${sel}"
+              data-id="${d.id}" data-type="${d.dish_type}" data-name="${d.dish_name}"
+              onclick="toggleDish(this)">${d.dish_name}</span>`;
+          }).join('')}
+        </div>
+      </div>`).join('');
+
+    updatePreview();
+  }
+
+  async function saveMeal(){
+    const date     = document.getElementById('meal-date').value;
     const mealType = document.getElementById('meal-type').value;
+    if(!date)    { showToast('Please pick a date.',true); return; }
+    if(!mealType){ showToast('Please select a meal type.',true); return; }
+    if(!selectedDishes.size){ showToast('Please select at least one dish.',true); return; }
 
-    const parts = typeOrder.filter(t=>selected[t]).map(t=>selected[t].name);
-    const nameEl = document.getElementById('preview-name');
-    const banner = document.getElementById('preview-banner');
-    const label  = document.getElementById('preview-label');
+    const btn=document.getElementById('save-btn');
+    btn.disabled=true; btn.textContent='Saving…';
 
-    banner.className = 'preview-banner ' + (mealType ? mealType.toLowerCase() : 'none');
+    try {
+      let id = mealId;
 
-    const typeLabels = { Breakfast:'☀️ Breakfast Preview', Lunch:'🌤 Lunch Preview', Dinner:'🌙 Dinner Preview' };
-    label.textContent = typeLabels[mealType] || 'Meal Preview';
+      if(isEdit && mealId){
+        const {error:updErr} = await db.from('meals')
+          .update({meal_date:date, meal_type:mealType})
+          .eq('id',mealId);
+        if(updErr) throw updErr;
+        // replace dish links
+        await db.from('meal_dishes').delete().eq('meal_id',mealId);
+      } else {
+        const {data:newMeal,error:insErr} = await db.from('meals')
+          .insert({meal_date:date, meal_type:mealType})
+          .select('id').single();
+        if(insErr) throw insErr;
+        id = newMeal.id;
+      }
 
-    if(parts.length===0){
-      nameEl.textContent = 'Select dishes below to see meal name…';
-      nameEl.classList.add('placeholder');
-    } else {
-      nameEl.textContent = parts.join(' + ');
-      nameEl.classList.remove('placeholder');
+      const rows = [...selectedDishes.keys()].map(did=>({meal_id:id, dish_id:did}));
+      const {error:linkErr} = await db.from('meal_dishes').insert(rows);
+      if(linkErr) throw linkErr;
+
+      window.location = `meal-detail.html?id=${id}`;
+    } catch(err){
+      showToast('Error: '+err.message, true);
+      btn.disabled=false; btn.textContent='Save Meal';
     }
   }
 
-  function saveMeal(){
-    const date = document.getElementById('meal-date').value;
-    const type = document.getElementById('meal-type').value;
-    if(!date){ alert('Please pick a date.'); return; }
-    if(!type){ alert('Please select a meal type.'); return; }
-    if(Object.keys(selected).length===0){ alert('Please select at least one dish.'); return; }
+  (async()=>{
+    const user = await requireAuth();
+    if(!user) return;
 
-    const dishIds = Object.values(selected).map(d=>d.id);
-    const payload = { meal_date: date, meal_type: type, dish_ids: dishIds };
-    console.log('Save meal payload:', payload);
-    /* TODO: INSERT into Supabase meals + meal_dishes junction */
-    window.location = 'meals.html';
-  }
+    const {data:dishes, error:dErr} = await db
+      .from('dishes')
+      .select('id,dish_name,dish_type,cuisine')
+      .order('dish_name');
+    if(dErr){ showToast('Could not load dishes',true); return; }
+
+    let preselected = new Set();
+
+    if(isEdit && mealId){
+      const {data:meal, error:mErr} = await db
+        .from('meals')
+        .select('meal_date,meal_type,meal_dishes(dish_id)')
+        .eq('id',mealId)
+        .single();
+      if(mErr||!meal){ showToast('Could not load meal',true); return; }
+      document.getElementById('meal-date').value = meal.meal_date;
+      document.getElementById('meal-type').value = meal.meal_type;
+      preselected = new Set((meal.meal_dishes||[]).map(r=>r.dish_id));
+    }
+
+    renderChips(dishes||[], preselected);
+  })();
 </script>
 </body>
 </html>

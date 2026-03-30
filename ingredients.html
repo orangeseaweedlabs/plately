@@ -6,32 +6,18 @@
   <title>MealKit — Ingredients</title>
   <link rel="stylesheet" href="styles.css"/>
   <style>
-    .filter-bar{
-      display:flex;gap:8px;padding:10px 16px;
-      overflow-x:auto;scrollbar-width:none;
-      border-bottom:1.5px solid var(--border);
-      background:var(--bg);position:sticky;top:60px;z-index:90;
-    }
+    .filter-bar{display:flex;gap:8px;padding:10px 16px;overflow-x:auto;scrollbar-width:none;border-bottom:1.5px solid var(--border);background:var(--bg);position:sticky;top:60px;z-index:90;}
     .filter-bar::-webkit-scrollbar{display:none;}
-    .filter-chip{
-      white-space:nowrap;padding:6px 16px;border-radius:30px;
-      font-size:.78rem;font-weight:700;
-      border:2px solid var(--border);background:#fff;color:var(--dark-60);
-      cursor:pointer;transition:all .18s;flex-shrink:0;
-    }
+    .filter-chip{white-space:nowrap;padding:6px 16px;border-radius:30px;font-size:.78rem;font-weight:700;border:2px solid var(--border);background:#fff;color:var(--dark-60);cursor:pointer;transition:all .18s;flex-shrink:0;}
     .filter-chip.active{background:var(--dark);color:var(--bg);border-color:var(--dark);}
+    .ing-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;}
+    .to-buy-badge{font-size:.68rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:2px 8px;border-radius:20px;background:var(--green-light);color:var(--green-dark);white-space:nowrap;}
 
-    .ing-icon{
-      width:40px;height:40px;border-radius:10px;
-      display:flex;align-items:center;justify-content:center;
-      font-size:1.2rem;flex-shrink:0;
-    }
-
-    .to-buy-badge{
-      font-size:.68rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;
-      padding:2px 8px;border-radius:20px;
-      background:var(--green-light);color:var(--green-dark);
-    }
+    /* Modal */
+    .modal-overlay{position:fixed;inset:0;background:rgba(48,42,44,.5);z-index:500;display:flex;align-items:flex-end;justify-content:center;}
+    .modal-sheet{background:var(--bg);border-radius:20px 20px 0 0;padding:24px 16px 32px;width:100%;max-width:var(--max-w);}
+    .modal-sheet h3{font-family:'Archivo Black',sans-serif;font-size:1.1rem;margin-bottom:16px;}
+    .modal-close{float:right;background:none;border:none;font-size:1.4rem;color:var(--dark-60);cursor:pointer;line-height:1;}
   </style>
 </head>
 <body>
@@ -41,15 +27,14 @@
     <span class="topbar-logo">meal<span>kit</span></span>
     <span class="topbar-title"></span>
     <button class="icon-btn light" onclick="toggleSearch()">🔍</button>
+    <span id="user-avatar"></span>
   </div>
 </div>
 
-<!-- Search bar -->
 <div class="page-wrap" id="search-bar" style="display:none;padding:8px 16px;background:var(--bg);border-bottom:1.5px solid var(--border);">
-  <input class="form-control" type="text" placeholder="Search ingredients…" id="search-input" oninput="filterList()"/>
+  <input class="form-control" type="text" placeholder="Search ingredients…" id="search-input" oninput="applyFilter()"/>
 </div>
 
-<!-- Filter -->
 <div class="filter-bar">
   <button class="filter-chip active" onclick="setFilter(this,'all')">All</button>
   <button class="filter-chip" onclick="setFilter(this,'Meat')">🥩 Meat</button>
@@ -61,142 +46,150 @@
 
 <div class="page-wrap">
   <div class="content">
-
-    <div class="list-block fade-up" id="ing-list">
-
-      <div class="list-item" data-type="Meat" data-name="Chicken Breast" onclick="window.location='ingredient-detail.html?id=1'">
-        <div class="ing-icon" style="background:#fff0e8">🍗</div>
-        <div class="list-item-body">
-          <div class="list-item-title">Chicken Breast</div>
-          <div class="list-item-sub"><span class="badge type-meat" style="font-size:.65rem;padding:2px 8px;">Meat</span></div>
-        </div>
-        <span class="to-buy-badge">To Buy</span>
-        <span class="list-item-arrow" style="margin-left:8px">›</span>
-      </div>
-
-      <div class="list-item" data-type="Meat" data-name="Salmon" onclick="window.location='ingredient-detail.html?id=2'">
-        <div class="ing-icon" style="background:#fff0e8">🐟</div>
-        <div class="list-item-body">
-          <div class="list-item-title">Salmon</div>
-          <div class="list-item-sub"><span class="badge type-meat" style="font-size:.65rem;padding:2px 8px;">Meat</span></div>
-        </div>
-        <span class="list-item-arrow">›</span>
-      </div>
-
-      <div class="list-item" data-type="Vegetable" data-name="Spinach" onclick="window.location='ingredient-detail.html?id=3'">
-        <div class="ing-icon" style="background:var(--green-light)">🥬</div>
-        <div class="list-item-body">
-          <div class="list-item-title">Spinach</div>
-          <div class="list-item-sub"><span class="badge type-vegetable" style="font-size:.65rem;padding:2px 8px;">Vegetable</span></div>
-        </div>
-        <span class="to-buy-badge">To Buy</span>
-        <span class="list-item-arrow" style="margin-left:8px">›</span>
-      </div>
-
-      <div class="list-item" data-type="Vegetable" data-name="Bok Choy" onclick="window.location='ingredient-detail.html?id=4'">
-        <div class="ing-icon" style="background:var(--green-light)">🥦</div>
-        <div class="list-item-body">
-          <div class="list-item-title">Bok Choy</div>
-          <div class="list-item-sub"><span class="badge type-vegetable" style="font-size:.65rem;padding:2px 8px;">Vegetable</span></div>
-        </div>
-        <span class="list-item-arrow">›</span>
-      </div>
-
-      <div class="list-item" data-type="Rice" data-name="White Rice" onclick="window.location='ingredient-detail.html?id=5'">
-        <div class="ing-icon" style="background:#fffbdd">🍚</div>
-        <div class="list-item-body">
-          <div class="list-item-title">White Rice</div>
-          <div class="list-item-sub"><span class="badge type-rice" style="font-size:.65rem;padding:2px 8px;">Rice</span></div>
-        </div>
-        <span class="list-item-arrow">›</span>
-      </div>
-
-      <div class="list-item" data-type="Noodle" data-name="Udon" onclick="window.location='ingredient-detail.html?id=6'">
-        <div class="ing-icon" style="background:#fde8f5">🍜</div>
-        <div class="list-item-body">
-          <div class="list-item-title">Udon</div>
-          <div class="list-item-sub"><span class="badge type-noodle" style="font-size:.65rem;padding:2px 8px;">Noodle</span></div>
-        </div>
-        <span class="to-buy-badge">To Buy</span>
-        <span class="list-item-arrow" style="margin-left:8px">›</span>
-      </div>
-
-      <div class="list-item" data-type="Others" data-name="Soy Sauce" onclick="window.location='ingredient-detail.html?id=7'">
-        <div class="ing-icon" style="background:var(--surface)">🫙</div>
-        <div class="list-item-body">
-          <div class="list-item-title">Soy Sauce</div>
-          <div class="list-item-sub"><span class="badge type-others" style="font-size:.65rem;padding:2px 8px;">Others</span></div>
-        </div>
-        <span class="list-item-arrow">›</span>
-      </div>
-
-      <div class="list-item" data-type="Others" data-name="Sesame Oil" onclick="window.location='ingredient-detail.html?id=8'">
-        <div class="ing-icon" style="background:var(--surface)">🧴</div>
-        <div class="list-item-body">
-          <div class="list-item-title">Sesame Oil</div>
-          <div class="list-item-sub"><span class="badge type-others" style="font-size:.65rem;padding:2px 8px;">Others</span></div>
-        </div>
-        <span class="list-item-arrow">›</span>
-      </div>
-
+    <!-- Skeleton -->
+    <div class="list-block" id="skeleton-list">
+      <div class="skel-row"><div class="skeleton skel-circle" style="border-radius:10px;"></div><div style="flex:1"><div class="skeleton skel-line medium"></div><div class="skeleton skel-line short mt-8"></div></div></div>
+      <div class="skel-row"><div class="skeleton skel-circle" style="border-radius:10px;"></div><div style="flex:1"><div class="skeleton skel-line medium"></div><div class="skeleton skel-line short mt-8"></div></div></div>
+      <div class="skel-row"><div class="skeleton skel-circle" style="border-radius:10px;"></div><div style="flex:1"><div class="skeleton skel-line medium"></div><div class="skeleton skel-line short mt-8"></div></div></div>
     </div>
 
+    <div class="list-block fade-up" id="ing-list" style="display:none;"></div>
     <div class="empty-state" id="empty-state" style="display:none;">
       <div class="empty-icon">🥗</div>
-      <p>No ingredients found.<br/>Tap <strong>+</strong> to add your first ingredient.</p>
+      <p>No ingredients yet.<br/>Tap <strong>+</strong> to add your first one.</p>
     </div>
-
   </div>
 </div>
 
-<!-- FAB: Add ingredient -->
-<button class="fab" onclick="addIngredient()">＋</button>
+<button class="fab" onclick="openAddModal()" title="Add Ingredient">＋</button>
+<nav class="bottom-nav" id="bottom-nav"></nav>
+<div class="toast" id="toast"></div>
 
-<!-- BOTTOM NAV -->
-<nav class="bottom-nav">
-  <button class="nav-item" onclick="window.location='index.html'"><span class="nav-icon">🏠</span>Home</button>
-  <button class="nav-item" onclick="window.location='dishes.html'"><span class="nav-icon">🍽</span>Dishes</button>
-  <button class="nav-item" onclick="window.location='meals.html'"><span class="nav-icon">📅</span>Meals</button>
-  <button class="nav-item" onclick="window.location='groceries.html'"><span class="nav-icon">🛒</span>Groceries</button>
-</nav>
+<!-- Add Ingredient Modal -->
+<div class="modal-overlay" id="add-modal" style="display:none;" onclick="closeModalOnBg(event)">
+  <div class="modal-sheet" onclick="event.stopPropagation()">
+    <button class="modal-close" onclick="closeAddModal()">×</button>
+    <h3>Add Ingredient</h3>
+    <div class="form-group">
+      <label class="form-label">Name *</label>
+      <input class="form-control" type="text" id="new-ing-name" placeholder="e.g. Chicken Breast"/>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Type *</label>
+      <select class="form-control" id="new-ing-type">
+        <option value="">Select…</option>
+        <option>Meat</option><option>Vegetable</option>
+        <option>Rice</option><option>Noodle</option><option>Others</option>
+      </select>
+    </div>
+    <div class="form-group" style="display:flex;align-items:center;gap:12px;">
+      <label class="form-label" style="margin:0">Add to Grocery List?</label>
+      <button class="toggle" id="new-ing-tobuy" onclick="this.classList.toggle('on')"></button>
+    </div>
+    <button class="btn btn-primary btn-block" id="add-ing-btn" onclick="saveIngredient()">Add Ingredient</button>
+  </div>
+</div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="supabase.js"></script>
+<script src="auth.js"></script>
+<script src="nav.js"></script>
 <script>
-  let activeFilter = 'all';
+  renderNav('ingredients');
 
-  function setFilter(el, type){
-    document.querySelectorAll('.filter-chip').forEach(c=>c.classList.remove('active'));
-    el.classList.add('active');
-    activeFilter = type;
-    filterList();
+  const TYPE_ICON  = {Meat:'🥩',Vegetable:'🥦',Rice:'🍚',Noodle:'🍜',Others:'✨'};
+  const TYPE_BG    = {Meat:'#fff0e8',Vegetable:'var(--green-light)',Rice:'#fffbdd',Noodle:'#fde8f5',Others:'var(--surface)'};
+  const TYPE_CLASS = {Meat:'type-meat',Vegetable:'type-vegetable',Rice:'type-rice',Noodle:'type-noodle',Others:'type-others'};
+
+  let allIngredients = [];
+  let activeFilter   = 'all';
+
+  function showToast(msg,isErr=false){
+    const t=document.getElementById('toast');
+    t.textContent=msg;t.className='toast'+(isErr?' error':'');
+    t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800);
   }
 
-  function filterList(){
-    const query = (document.getElementById('search-input')?.value||'').toLowerCase();
-    const items = document.querySelectorAll('#ing-list .list-item');
-    let vis = 0;
-    items.forEach(item=>{
-      const typeMatch = activeFilter==='all'||item.dataset.type===activeFilter;
-      const nameMatch = !query||item.dataset.name.toLowerCase().includes(query);
-      const show = typeMatch&&nameMatch;
-      item.style.display = show ? '':'none';
-      if(show) vis++;
+  function setFilter(el,type){ document.querySelectorAll('.filter-chip').forEach(c=>c.classList.remove('active')); el.classList.add('active'); activeFilter=type; applyFilter(); }
+
+  function applyFilter(){
+    const q=(document.getElementById('search-input')?.value||'').toLowerCase();
+    const filtered=allIngredients.filter(i=>{
+      const typeOk=activeFilter==='all'||i.ingredient_type===activeFilter;
+      const nameOk=!q||i.ingredient_name.toLowerCase().includes(q);
+      return typeOk&&nameOk;
     });
-    document.getElementById('empty-state').style.display = vis===0?'':'none';
-    document.getElementById('ing-list').style.display = vis===0?'none':'';
+    renderList(filtered);
+  }
+
+  function renderList(items){
+    const list =document.getElementById('ing-list');
+    const empty=document.getElementById('empty-state');
+    if(!items.length){ list.style.display='none'; empty.style.display=''; return; }
+    empty.style.display='none'; list.style.display='';
+    list.innerHTML=items.map(i=>`
+      <div class="list-item" onclick="window.location='ingredient-detail.html?id=${i.id}'">
+        <div class="ing-icon" style="background:${TYPE_BG[i.ingredient_type]||'var(--surface)'}">${TYPE_ICON[i.ingredient_type]||'🥗'}</div>
+        <div class="list-item-body">
+          <div class="list-item-title">${i.ingredient_name}</div>
+          <div class="list-item-sub"><span class="badge ${TYPE_CLASS[i.ingredient_type]||'type-others'}" style="font-size:.65rem;padding:2px 8px;">${i.ingredient_type}</span></div>
+        </div>
+        ${i.to_buy?'<span class="to-buy-badge">To Buy</span>':''}
+        <span class="list-item-arrow" style="margin-left:8px">›</span>
+      </div>`).join('');
   }
 
   function toggleSearch(){
-    const bar = document.getElementById('search-bar');
-    bar.style.display = bar.style.display==='none'?'':'none';
+    const bar=document.getElementById('search-bar');
+    bar.style.display=bar.style.display==='none'?'':'none';
     if(bar.style.display!=='none') document.getElementById('search-input').focus();
   }
 
-  function addIngredient(){
-    const name = prompt('New ingredient name:');
-    if(!name) return;
-    /* TODO: INSERT into Supabase ingredients */
-    alert(`"${name}" added! Connect to Supabase to persist.`);
+  function openAddModal(){ document.getElementById('add-modal').style.display='flex'; document.getElementById('new-ing-name').focus(); }
+  function closeAddModal(){ document.getElementById('add-modal').style.display='none'; }
+  function closeModalOnBg(e){ if(e.target===document.getElementById('add-modal')) closeAddModal(); }
+
+  async function saveIngredient(){
+    const name  = document.getElementById('new-ing-name').value.trim();
+    const type  = document.getElementById('new-ing-type').value;
+    const toBuy = document.getElementById('new-ing-tobuy').classList.contains('on');
+    if(!name){ showToast('Please enter a name.',true); return; }
+    if(!type){ showToast('Please select a type.',true); return; }
+
+    const btn=document.getElementById('add-ing-btn');
+    btn.disabled=true; btn.textContent='Saving…';
+
+    const {data,error} = await db.from('ingredients')
+      .insert({ingredient_name:name, ingredient_type:type, to_buy:toBuy})
+      .select().single();
+
+    if(error){ showToast('Error: '+error.message,true); btn.disabled=false; btn.textContent='Add Ingredient'; return; }
+
+    allIngredients.unshift(data);
+    applyFilter();
+    closeAddModal();
+    document.getElementById('new-ing-name').value='';
+    document.getElementById('new-ing-type').value='';
+    document.getElementById('new-ing-tobuy').classList.remove('on');
+    btn.disabled=false; btn.textContent='Add Ingredient';
+    showToast('Ingredient added!');
   }
+
+  (async()=>{
+    const user = await requireAuth();
+    if(!user) return;
+    renderAvatar(user);
+
+    const {data,error} = await db
+      .from('ingredients')
+      .select('id,ingredient_name,ingredient_type,to_buy')
+      .order('ingredient_type').order('ingredient_name');
+
+    document.getElementById('skeleton-list').style.display='none';
+    if(error){ showToast('Could not load ingredients',true); return; }
+    allIngredients = data||[];
+    applyFilter();
+  })();
 </script>
 </body>
 </html>
