@@ -13,11 +13,29 @@
     .ing-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;}
     .to-buy-badge{font-size:.68rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:2px 8px;border-radius:20px;background:var(--green-light);color:var(--green-dark);white-space:nowrap;}
 
-    /* Modal */
-    .modal-overlay{position:fixed;inset:0;background:rgba(48,42,44,.5);z-index:500;display:flex;align-items:flex-end;justify-content:center;}
-    .modal-sheet{background:var(--bg);border-radius:20px 20px 0 0;padding:24px 16px 32px;width:100%;max-width:var(--max-w);}
-    .modal-sheet h3{font-family:'Archivo Black',sans-serif;font-size:1.1rem;margin-bottom:16px;}
-    .modal-close{float:right;background:none;border:none;font-size:1.4rem;color:var(--dark-60);cursor:pointer;line-height:1;}
+    /* ── Modal ── */
+    .modal-overlay{
+      position:fixed;inset:0;background:rgba(48,42,44,.5);z-index:500;
+      display:flex;align-items:flex-end;justify-content:center;
+      animation:mFadeIn .2s ease;
+    }
+    @keyframes mFadeIn{from{opacity:0;}to{opacity:1;}}
+    .modal-sheet{
+      background:var(--bg);border-radius:20px 20px 0 0;
+      padding:24px 16px 36px;width:100%;max-width:var(--max-w);
+      animation:mSlideUp .25s cubic-bezier(.22,.68,0,1.2);
+    }
+    @keyframes mSlideUp{from{transform:translateY(60px);opacity:0;}to{transform:translateY(0);opacity:1;}}
+    .modal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;}
+    .modal-header h3{font-family:'Archivo Black',sans-serif;font-size:1.1rem;}
+    .modal-close{
+      background:var(--surface);border:none;width:32px;height:32px;border-radius:50%;
+      font-size:1.1rem;color:var(--dark-60);cursor:pointer;
+      display:flex;align-items:center;justify-content:center;line-height:1;transition:background .15s;
+    }
+    .modal-close:hover{background:var(--dark-20);}
+    .tobuy-row{display:flex;align-items:center;gap:12px;margin-bottom:18px;}
+    .tobuy-row .form-label{margin:0;}
   </style>
 </head>
 <body>
@@ -65,14 +83,18 @@
 <nav class="bottom-nav" id="bottom-nav"></nav>
 <div class="toast" id="toast"></div>
 
-<!-- Add Ingredient Modal -->
+<!-- ── Add Ingredient Modal ── -->
 <div class="modal-overlay" id="add-modal" style="display:none;" onclick="closeModalOnBg(event)">
   <div class="modal-sheet" onclick="event.stopPropagation()">
-    <button class="modal-close" onclick="closeAddModal()">×</button>
-    <h3>Add Ingredient</h3>
+    <div class="modal-header">
+      <h3>Add Ingredient</h3>
+      <button class="modal-close" onclick="closeAddModal()">×</button>
+    </div>
     <div class="form-group">
       <label class="form-label">Name *</label>
-      <input class="form-control" type="text" id="new-ing-name" placeholder="e.g. Chicken Breast"/>
+      <input class="form-control" type="text" id="new-ing-name"
+        placeholder="e.g. Chicken Breast"
+        onkeydown="if(event.key==='Enter') saveIngredient()"/>
     </div>
     <div class="form-group">
       <label class="form-label">Type *</label>
@@ -82,11 +104,13 @@
         <option>Rice</option><option>Noodle</option><option>Others</option>
       </select>
     </div>
-    <div class="form-group" style="display:flex;align-items:center;gap:12px;">
-      <label class="form-label" style="margin:0">Add to Grocery List?</label>
+    <div class="tobuy-row">
+      <label class="form-label">Add to Grocery List?</label>
       <button class="toggle" id="new-ing-tobuy" onclick="this.classList.toggle('on')"></button>
     </div>
-    <button class="btn btn-primary btn-block" id="add-ing-btn" onclick="saveIngredient()">Add Ingredient</button>
+    <button class="btn btn-primary btn-block" id="add-ing-btn" onclick="saveIngredient()">
+      Add Ingredient
+    </button>
   </div>
 </div>
 
@@ -97,97 +121,128 @@
 <script>
   renderNav('ingredients');
 
-  const TYPE_ICON  = {Meat:'🥩',Vegetable:'🥦',Rice:'🍚',Noodle:'🍜',Others:'✨'};
-  const TYPE_BG    = {Meat:'#fff0e8',Vegetable:'var(--green-light)',Rice:'#fffbdd',Noodle:'#fde8f5',Others:'var(--surface)'};
-  const TYPE_CLASS = {Meat:'type-meat',Vegetable:'type-vegetable',Rice:'type-rice',Noodle:'type-noodle',Others:'type-others'};
+  const TYPE_ICON  = { Meat:'🥩', Vegetable:'🥦', Rice:'🍚', Noodle:'🍜', Others:'✨' };
+  const TYPE_BG    = { Meat:'#fff0e8', Vegetable:'var(--green-light)', Rice:'#fffbdd', Noodle:'#fde8f5', Others:'var(--surface)' };
+  const TYPE_CLASS = { Meat:'type-meat', Vegetable:'type-vegetable', Rice:'type-rice', Noodle:'type-noodle', Others:'type-others' };
 
   let allIngredients = [];
   let activeFilter   = 'all';
 
-  function showToast(msg,isErr=false){
-    const t=document.getElementById('toast');
-    t.textContent=msg;t.className='toast'+(isErr?' error':'');
-    t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800);
+  // Hoisted to module scope — accessible by saveIngredient() called from onclick
+  let currentUser = null;
+
+  function showToast(msg, isErr = false) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = 'toast' + (isErr ? ' error' : '');
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2800);
   }
 
-  function setFilter(el,type){ document.querySelectorAll('.filter-chip').forEach(c=>c.classList.remove('active')); el.classList.add('active'); activeFilter=type; applyFilter(); }
+  function setFilter(el, type) {
+    document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+    el.classList.add('active');
+    activeFilter = type;
+    applyFilter();
+  }
 
-  function applyFilter(){
-    const q=(document.getElementById('search-input')?.value||'').toLowerCase();
-    const filtered=allIngredients.filter(i=>{
-      const typeOk=activeFilter==='all'||i.ingredient_type===activeFilter;
-      const nameOk=!q||i.ingredient_name.toLowerCase().includes(q);
-      return typeOk&&nameOk;
+  function applyFilter() {
+    const q = (document.getElementById('search-input')?.value || '').toLowerCase();
+    const filtered = allIngredients.filter(i => {
+      const typeOk = activeFilter === 'all' || i.ingredient_type === activeFilter;
+      const nameOk = !q || i.ingredient_name.toLowerCase().includes(q);
+      return typeOk && nameOk;
     });
     renderList(filtered);
   }
 
-  function renderList(items){
-    const list =document.getElementById('ing-list');
-    const empty=document.getElementById('empty-state');
-    if(!items.length){ list.style.display='none'; empty.style.display=''; return; }
-    empty.style.display='none'; list.style.display='';
-    list.innerHTML=items.map(i=>`
+  function renderList(items) {
+    const list  = document.getElementById('ing-list');
+    const empty = document.getElementById('empty-state');
+    if (!items.length) { list.style.display = 'none'; empty.style.display = ''; return; }
+    empty.style.display = 'none'; list.style.display = '';
+    list.innerHTML = items.map(i => `
       <div class="list-item" onclick="window.location='ingredient-detail.html?id=${i.id}'">
-        <div class="ing-icon" style="background:${TYPE_BG[i.ingredient_type]||'var(--surface)'}">${TYPE_ICON[i.ingredient_type]||'🥗'}</div>
+        <div class="ing-icon" style="background:${TYPE_BG[i.ingredient_type] || 'var(--surface)'}">
+          ${TYPE_ICON[i.ingredient_type] || '🥗'}
+        </div>
         <div class="list-item-body">
           <div class="list-item-title">${i.ingredient_name}</div>
-          <div class="list-item-sub"><span class="badge ${TYPE_CLASS[i.ingredient_type]||'type-others'}" style="font-size:.65rem;padding:2px 8px;">${i.ingredient_type}</span></div>
+          <div class="list-item-sub">
+            <span class="badge ${TYPE_CLASS[i.ingredient_type] || 'type-others'}"
+              style="font-size:.65rem;padding:2px 8px;">${i.ingredient_type}</span>
+          </div>
         </div>
-        ${i.to_buy?'<span class="to-buy-badge">To Buy</span>':''}
+        ${i.to_buy ? '<span class="to-buy-badge">To Buy</span>' : ''}
         <span class="list-item-arrow" style="margin-left:8px">›</span>
       </div>`).join('');
   }
 
-  function toggleSearch(){
-    const bar=document.getElementById('search-bar');
-    bar.style.display=bar.style.display==='none'?'':'none';
-    if(bar.style.display!=='none') document.getElementById('search-input').focus();
+  function toggleSearch() {
+    const bar = document.getElementById('search-bar');
+    bar.style.display = bar.style.display === 'none' ? '' : 'none';
+    if (bar.style.display !== 'none') document.getElementById('search-input').focus();
   }
 
-  function openAddModal(){ document.getElementById('add-modal').style.display='flex'; document.getElementById('new-ing-name').focus(); }
-  function closeAddModal(){ document.getElementById('add-modal').style.display='none'; }
-  function closeModalOnBg(e){ if(e.target===document.getElementById('add-modal')) closeAddModal(); }
+  function openAddModal() {
+    document.getElementById('new-ing-name').value = '';
+    document.getElementById('new-ing-type').value = '';
+    document.getElementById('new-ing-tobuy').classList.remove('on');
+    document.getElementById('add-modal').style.display = 'flex';
+    setTimeout(() => document.getElementById('new-ing-name').focus(), 80);
+  }
 
-  async function saveIngredient(){
+  function closeAddModal()  { document.getElementById('add-modal').style.display = 'none'; }
+  function closeModalOnBg(e){ if (e.target === document.getElementById('add-modal')) closeAddModal(); }
+
+  async function saveIngredient() {
     const name  = document.getElementById('new-ing-name').value.trim();
     const type  = document.getElementById('new-ing-type').value;
     const toBuy = document.getElementById('new-ing-tobuy').classList.contains('on');
-    if(!name){ showToast('Please enter a name.',true); return; }
-    if(!type){ showToast('Please select a type.',true); return; }
 
-    const btn=document.getElementById('add-ing-btn');
-    btn.disabled=true; btn.textContent='Saving…';
+    if (!name)       { showToast('Please enter a name.', true); return; }
+    if (!type)       { showToast('Please select a type.', true); return; }
+    if (!currentUser){ showToast('Not signed in — please refresh.', true); return; }
 
-    const {data,error} = await db.from('ingredients')
-      .insert({ingredient_name:name, ingredient_type:type, to_buy:toBuy, user_id: user.id })
-      .select().single();
+    const btn = document.getElementById('add-ing-btn');
+    btn.disabled = true; btn.textContent = 'Saving…';
 
-    if(error){ showToast('Error: '+error.message,true); btn.disabled=false; btn.textContent='Add Ingredient'; return; }
+    const { data, error } = await db.from('ingredients')
+      .insert({
+        ingredient_name: name,
+        ingredient_type: type,
+        to_buy:          toBuy,
+        user_id:         currentUser.id    // ← satisfies RLS policy
+      })
+      .select()
+      .single();
+
+    btn.disabled = false; btn.textContent = 'Add Ingredient';
+
+    if (error) { showToast('Error: ' + error.message, true); return; }
 
     allIngredients.unshift(data);
     applyFilter();
     closeAddModal();
-    document.getElementById('new-ing-name').value='';
-    document.getElementById('new-ing-type').value='';
-    document.getElementById('new-ing-tobuy').classList.remove('on');
-    btn.disabled=false; btn.textContent='Add Ingredient';
     showToast('Ingredient added!');
   }
 
-  (async()=>{
+  // ── Init ──────────────────────────────────────────────────────
+  (async () => {
     const user = await requireAuth();
-    if(!user) return;
+    if (!user) return;
+    currentUser = user;   // ← assign to module-scoped variable
     renderAvatar(user);
 
-    const {data,error} = await db
+    const { data, error } = await db
       .from('ingredients')
-      .select('id,ingredient_name,ingredient_type,to_buy')
-      .order('ingredient_type').order('ingredient_name');
+      .select('id, ingredient_name, ingredient_type, to_buy')
+      .order('ingredient_type')
+      .order('ingredient_name');
 
-    document.getElementById('skeleton-list').style.display='none';
-    if(error){ showToast('Could not load ingredients',true); return; }
-    allIngredients = data||[];
+    document.getElementById('skeleton-list').style.display = 'none';
+    if (error) { showToast('Could not load ingredients', true); return; }
+    allIngredients = data || [];
     applyFilter();
   })();
 </script>

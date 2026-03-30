@@ -12,7 +12,7 @@
     .preview-banner.dinner   {background:var(--pink-light);}
     .preview-banner.none     {background:var(--surface);}
     .preview-label{font-size:.7rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;opacity:.65;margin-bottom:4px;}
-    .preview-name {font-family:'Archivo Black',sans-serif;font-size:.95rem;line-height:1.3;color:var(--dark);}
+    .preview-name{font-family:'Archivo Black',sans-serif;font-size:.95rem;line-height:1.3;color:var(--dark);}
     .preview-name.placeholder{opacity:.4;font-family:'Plus Jakarta Sans',sans-serif;font-weight:400;font-size:.85rem;font-style:italic;}
     .dish-type-section{margin-bottom:20px;}
     .dish-type-title{font-size:.75rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--dark-60);margin-bottom:10px;}
@@ -83,27 +83,29 @@
   const params = new URLSearchParams(window.location.search);
   const mealId = params.get('id');
   const isEdit = params.get('edit') === '1';
-  if(isEdit) document.getElementById('page-title').textContent = 'Edit Meal';
+  if (isEdit) document.getElementById('page-title').textContent = 'Edit Meal';
 
-  // Default date to today
-  document.getElementById('meal-date').value = new Date().toISOString().slice(0,10);
+  document.getElementById('meal-date').value = new Date().toISOString().slice(0, 10);
 
   const DISH_ORDER  = ['Protein','Carb','Greens','Others'];
-  const TYPE_COLOR  = {Protein:'chip-orange',Carb:'chip-amber',Greens:'chip-green',Others:'chip-dark'};
-  const TYPE_ICON   = {Protein:'🥩',Carb:'🍚',Greens:'🥦',Others:'✨'};
-  const TYPE_LABELS = {Breakfast:'☀️ Breakfast Preview',Lunch:'🌤 Lunch Preview',Dinner:'🌙 Dinner Preview'};
+  const TYPE_COLOR  = { Protein:'chip-orange', Carb:'chip-amber', Greens:'chip-green', Others:'chip-dark' };
+  const TYPE_ICON   = { Protein:'🥩', Carb:'🍚', Greens:'🥦', Others:'✨' };
+  const TYPE_LABELS = { Breakfast:'☀️ Breakfast Preview', Lunch:'🌤 Lunch Preview', Dinner:'🌙 Dinner Preview' };
 
-  // selected: Map<dish_type, {id, name}>  — one per type drives the meal name
-  // but multi-select is allowed (extra dishes stored too)
-  const selectedDishes = new Map();  // dish_id → {id, name, dish_type}
+  const selectedDishes = new Map();  // dish_id → { id, name, dish_type }
 
-  function showToast(msg,isErr=false){
-    const t=document.getElementById('toast');
-    t.textContent=msg;t.className='toast'+(isErr?' error':'');
-    t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800);
+  // Hoisted to module scope — accessible by saveMeal() called from onclick
+  let currentUser = null;
+
+  function showToast(msg, isErr = false) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = 'toast' + (isErr ? ' error' : '');
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2800);
   }
 
-  function updatePreview(){
+  function updatePreview() {
     const mealType = document.getElementById('meal-type').value;
     const banner   = document.getElementById('preview-banner');
     const nameEl   = document.getElementById('preview-name');
@@ -112,55 +114,57 @@
     banner.className = 'preview-banner ' + (mealType ? mealType.toLowerCase() : 'none');
     labelEl.textContent = TYPE_LABELS[mealType] || 'Meal Preview';
 
-    const byType={};
-    selectedDishes.forEach(d=>{
-      if(!byType[d.dish_type]) byType[d.dish_type]=[];
+    const byType = {};
+    selectedDishes.forEach(d => {
+      if (!byType[d.dish_type]) byType[d.dish_type] = [];
       byType[d.dish_type].push(d.name);
     });
-    const parts = DISH_ORDER.filter(t=>byType[t]).map(t=>byType[t].join(' & '));
-    if(!parts.length){
-      nameEl.textContent='Select dishes below to see meal name…';
+    const parts = DISH_ORDER.filter(t => byType[t]).map(t => byType[t].join(' & '));
+
+    if (!parts.length) {
+      nameEl.textContent = 'Select dishes below to see meal name…';
       nameEl.classList.add('placeholder');
     } else {
-      nameEl.textContent=parts.join(' + ');
+      nameEl.textContent = parts.join(' + ');
       nameEl.classList.remove('placeholder');
     }
   }
 
-  function toggleDish(el){
+  function toggleDish(el) {
     const id   = el.dataset.id;
     const type = el.dataset.type;
     const name = el.dataset.name;
-    const cls  = TYPE_COLOR[type]||'chip-dark';
 
-    if(selectedDishes.has(id)){
+    if (selectedDishes.has(id)) {
       selectedDishes.delete(id);
       el.classList.remove('selected');
     } else {
-      selectedDishes.set(id,{id,name,dish_type:type});
+      selectedDishes.set(id, { id, name, dish_type: type });
       el.classList.add('selected');
     }
     updatePreview();
   }
 
-  function renderChips(dishes, preselected=new Set()){
-    const wrap=document.getElementById('dish-chips-wrap');
-    if(!dishes.length){ wrap.innerHTML='<p class="small muted">No dishes yet. Add some from the Dishes page first.</p>'; return; }
-
-    const groups={};
-    dishes.forEach(d=>{
-      if(!groups[d.dish_type]) groups[d.dish_type]=[];
+  function renderChips(dishes, preselected = new Set()) {
+    const wrap = document.getElementById('dish-chips-wrap');
+    if (!dishes.length) {
+      wrap.innerHTML = '<p class="small muted">No dishes yet. Add some from the Dishes page first.</p>';
+      return;
+    }
+    const groups = {};
+    dishes.forEach(d => {
+      if (!groups[d.dish_type]) groups[d.dish_type] = [];
       groups[d.dish_type].push(d);
     });
 
-    wrap.innerHTML = DISH_ORDER.filter(t=>groups[t]).map(t=>`
+    wrap.innerHTML = DISH_ORDER.filter(t => groups[t]).map(t => `
       <div class="dish-type-section">
         <p class="dish-type-title">${TYPE_ICON[t]} ${t}</p>
         <div class="chip-group">
-          ${groups[t].map(d=>{
-            const sel = preselected.has(d.id) ? 'selected' : '';
-            if(sel){ selectedDishes.set(d.id,{id:d.id,name:d.dish_name,dish_type:d.dish_type}); }
-            return `<span class="chip ${TYPE_COLOR[t]||'chip-dark'} ${sel}"
+          ${groups[t].map(d => {
+            const isSel = preselected.has(d.id);
+            if (isSel) selectedDishes.set(d.id, { id: d.id, name: d.dish_name, dish_type: d.dish_type });
+            return `<span class="chip ${TYPE_COLOR[t] || 'chip-dark'} ${isSel ? 'selected' : ''}"
               data-id="${d.id}" data-type="${d.dish_type}" data-name="${d.dish_name}"
               onclick="toggleDish(this)">${d.dish_name}</span>`;
           }).join('')}
@@ -170,70 +174,82 @@
     updatePreview();
   }
 
-  async function saveMeal(){
+  // ── Save meal ─────────────────────────────────────────────────
+  async function saveMeal() {
     const date     = document.getElementById('meal-date').value;
     const mealType = document.getElementById('meal-type').value;
-    if(!date)    { showToast('Please pick a date.',true); return; }
-    if(!mealType){ showToast('Please select a meal type.',true); return; }
-    if(!selectedDishes.size){ showToast('Please select at least one dish.',true); return; }
 
-    const btn=document.getElementById('save-btn');
-    btn.disabled=true; btn.textContent='Saving…';
+    if (!date)               { showToast('Please pick a date.', true); return; }
+    if (!mealType)           { showToast('Please select a meal type.', true); return; }
+    if (!selectedDishes.size){ showToast('Please select at least one dish.', true); return; }
+    if (!currentUser)        { showToast('Not signed in — please refresh.', true); return; }
+
+    const btn = document.getElementById('save-btn');
+    btn.disabled = true; btn.textContent = 'Saving…';
 
     try {
       let id = mealId;
 
-      if(isEdit && mealId){
-        const {error:updErr} = await db.from('meals')
-          .update({meal_date:date, meal_type:mealType})
-          .eq('id',mealId);
-        if(updErr) throw updErr;
-        // replace dish links
-        await db.from('meal_dishes').delete().eq('meal_id',mealId);
+      if (isEdit && mealId) {
+        const { error: updErr } = await db.from('meals')
+          .update({ meal_date: date, meal_type: mealType })
+          .eq('id', mealId);
+        if (updErr) throw updErr;
+        await db.from('meal_dishes').delete().eq('meal_id', mealId);
+
       } else {
-        const {data:newMeal,error:insErr} = await db.from('meals')
-          .insert({meal_date:date, meal_type:mealType})
-          .select('id').single();
-        if(insErr) throw insErr;
+        const { data: newMeal, error: insErr } = await db.from('meals')
+          .insert({
+            meal_date: date,
+            meal_type: mealType,
+            user_id:   currentUser.id    // ← satisfies RLS policy
+          })
+          .select('id')
+          .single();
+        if (insErr) throw insErr;
         id = newMeal.id;
       }
 
-      const rows = [...selectedDishes.keys()].map(did=>({meal_id:id, dish_id:did}));
-      const {error:linkErr} = await db.from('meal_dishes').insert(rows);
-      if(linkErr) throw linkErr;
+      // meal_dishes uses meal RLS — no user_id column needed
+      const rows = [...selectedDishes.keys()].map(did => ({ meal_id: id, dish_id: did }));
+      const { error: linkErr } = await db.from('meal_dishes').insert(rows);
+      if (linkErr) throw linkErr;
 
       window.location = `meal-detail.html?id=${id}`;
-    } catch(err){
-      showToast('Error: '+err.message, true);
-      btn.disabled=false; btn.textContent='Save Meal';
+
+    } catch (err) {
+      showToast('Error: ' + err.message, true);
+      btn.disabled = false; btn.textContent = 'Save Meal';
     }
   }
 
-  (async()=>{
+  // ── Init ──────────────────────────────────────────────────────
+  (async () => {
     const user = await requireAuth();
-    if(!user) return;
+    if (!user) return;
+    currentUser = user;   // ← assign to module-scoped variable
 
-    const {data:dishes, error:dErr} = await db
+    const { data: dishes, error: dErr } = await db
       .from('dishes')
-      .select('id,dish_name,dish_type,cuisine')
+      .select('id, dish_name, dish_type, cuisine')
       .order('dish_name');
-    if(dErr){ showToast('Could not load dishes',true); return; }
+    if (dErr) { showToast('Could not load dishes', true); return; }
 
     let preselected = new Set();
 
-    if(isEdit && mealId){
-      const {data:meal, error:mErr} = await db
+    if (isEdit && mealId) {
+      const { data: meal, error: mErr } = await db
         .from('meals')
-        .select('meal_date,meal_type,meal_dishes(dish_id)')
-        .eq('id',mealId)
+        .select('meal_date, meal_type, meal_dishes(dish_id)')
+        .eq('id', mealId)
         .single();
-      if(mErr||!meal){ showToast('Could not load meal',true); return; }
+      if (mErr || !meal) { showToast('Could not load meal', true); return; }
       document.getElementById('meal-date').value = meal.meal_date;
       document.getElementById('meal-type').value = meal.meal_type;
-      preselected = new Set((meal.meal_dishes||[]).map(r=>r.dish_id));
+      preselected = new Set((meal.meal_dishes || []).map(r => r.dish_id));
     }
 
-    renderChips(dishes||[], preselected);
+    renderChips(dishes || [], preselected);
   })();
 </script>
 </body>
