@@ -160,7 +160,7 @@
     btn.disabled=true; btn.textContent='Saving…';
 
     const {data,error} = await db.from('ingredients')
-      .insert({ingredient_name:name, ingredient_type:type, to_buy:toBuy})
+      .insert({ingredient_name:name, ingredient_type:type, to_buy:toBuy, user_id: user.id })
       .select().single();
 
     if(error){ showToast('Error: '+error.message,true); btn.disabled=false; btn.textContent='Add Ingredient'; return; }
