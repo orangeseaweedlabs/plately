@@ -27,6 +27,135 @@
     .dish-card-arrow{color:var(--dark-60);font-size:.85rem;}
     .remove-btn{background:transparent;border:none;color:var(--pink-dark);font-size:.85rem;padding:6px;cursor:pointer;opacity:.65;flex-shrink:0;}
     .remove-btn:hover{opacity:1;}
+
+    /* ── Grocery CTA banner ── */
+    .grocery-cta{
+      display:flex;align-items:center;gap:12px;
+      background:var(--green-light);
+      border:1.5px solid rgba(56,184,74,.25);
+      border-radius:var(--r-sm);
+      padding:14px 16px;
+      margin-bottom:4px;
+      cursor:pointer;
+      transition:background .15s;
+    }
+    .grocery-cta:hover{background:#d4f3d9;}
+    .grocery-cta-icon{font-size:1.5rem;flex-shrink:0;line-height:1;}
+    .grocery-cta-body{flex:1;}
+    .grocery-cta-title{font-weight:700;font-size:.88rem;color:var(--green-dark);}
+    .grocery-cta-sub{font-size:.75rem;color:var(--green-dark);opacity:.75;margin-top:2px;}
+    .grocery-cta-arrow{color:var(--green-dark);font-size:1.1rem;opacity:.6;}
+    .grocery-cta-badge{
+      background:var(--green-dark);color:#fff;
+      font-size:.68rem;font-weight:700;
+      padding:2px 8px;border-radius:20px;
+      white-space:nowrap;
+    }
+
+    /* ── Ingredients modal ── */
+    .modal-overlay{
+      position:fixed;inset:0;background:rgba(48,42,44,.55);z-index:500;
+      display:flex;align-items:flex-end;justify-content:center;
+      animation:mFadeIn .2s ease;
+    }
+    @keyframes mFadeIn{from{opacity:0;}to{opacity:1;}}
+    .modal-sheet{
+      background:var(--bg);border-radius:20px 20px 0 0;
+      width:100%;max-width:var(--max-w);
+      max-height:82vh;
+      display:flex;flex-direction:column;
+      animation:mSlideUp .28s cubic-bezier(.22,.68,0,1.2);
+    }
+    @keyframes mSlideUp{from{transform:translateY(70px);opacity:0;}to{transform:translateY(0);opacity:1;}}
+    .modal-handle{
+      width:36px;height:4px;border-radius:2px;
+      background:var(--dark-20);margin:12px auto 0;flex-shrink:0;
+    }
+    .modal-header{
+      display:flex;align-items:center;justify-content:space-between;
+      padding:16px 16px 12px;border-bottom:1.5px solid var(--border);flex-shrink:0;
+    }
+    .modal-header-left h3{font-family:'Archivo Black',sans-serif;font-size:1rem;margin-bottom:3px;}
+    .modal-header-left p{font-size:.75rem;color:var(--dark-60);}
+    .modal-close{
+      background:var(--surface);border:none;width:32px;height:32px;border-radius:50%;
+      font-size:1.1rem;color:var(--dark-60);cursor:pointer;
+      display:flex;align-items:center;justify-content:center;
+      transition:background .15s;flex-shrink:0;
+    }
+    .modal-close:hover{background:var(--dark-20);}
+
+    /* Scrollable body */
+    .modal-body{overflow-y:auto;flex:1;padding:12px 16px 0;}
+
+    /* Dish group */
+    .ing-dish-group{margin-bottom:18px;}
+    .ing-dish-label{
+      display:flex;align-items:center;gap:8px;
+      font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+      color:var(--dark-60);margin-bottom:8px;
+    }
+    .ing-dish-label .dish-icon-sm{
+      width:22px;height:22px;border-radius:6px;
+      display:flex;align-items:center;justify-content:center;font-size:.75rem;
+    }
+    .ing-dish-label .dish-icon-sm.protein{background:#fff3e0;}
+    .ing-dish-label .dish-icon-sm.carb   {background:#fffbdd;}
+    .ing-dish-label .dish-icon-sm.greens {background:var(--green-light);}
+    .ing-dish-label .dish-icon-sm.others {background:var(--surface);}
+
+    /* Checklist item */
+    .ing-check-item{
+      display:flex;align-items:center;gap:12px;
+      padding:11px 14px;
+      background:#fff;border-bottom:1.5px solid var(--border);
+      cursor:pointer;transition:background .15s;user-select:none;
+    }
+    .ing-check-item:first-child{border-radius:var(--r-sm) var(--r-sm) 0 0;}
+    .ing-check-item:last-child{border-bottom:none;border-radius:0 0 var(--r-sm) var(--r-sm);}
+    .ing-check-item:only-child{border-radius:var(--r-sm);}
+    .ing-check-item:hover{background:var(--surface);}
+    .ing-check-item.already-added{opacity:.5;pointer-events:none;}
+
+    .check-box{
+      width:22px;height:22px;border-radius:6px;border:2px solid var(--border);
+      flex-shrink:0;display:flex;align-items:center;justify-content:center;
+      font-size:.85rem;transition:all .18s;background:#fff;
+    }
+    .ing-check-item.checked .check-box{background:var(--green);border-color:var(--green-dark);color:#fff;}
+    .ing-check-item.already-added .check-box{background:var(--green-light);border-color:var(--green-dark);color:var(--green-dark);}
+
+    .ing-check-body{flex:1;min-width:0;}
+    .ing-check-name{font-weight:600;font-size:.88rem;}
+    .ing-check-sub{font-size:.72rem;color:var(--dark-60);margin-top:2px;display:flex;align-items:center;gap:6px;}
+    .already-tag{
+      font-size:.65rem;font-weight:700;letter-spacing:.03em;text-transform:uppercase;
+      background:var(--green-light);color:var(--green-dark);
+      padding:1px 7px;border-radius:20px;
+    }
+
+    /* Select-all bar */
+    .select-all-bar{
+      display:flex;align-items:center;justify-content:space-between;
+      padding:10px 0 12px;
+    }
+    .select-all-btn{
+      font-size:.78rem;font-weight:700;color:var(--blue);
+      background:none;border:none;cursor:pointer;padding:0;
+    }
+    .selected-count-label{font-size:.78rem;color:var(--dark-60);font-weight:600;}
+
+    /* Footer */
+    .modal-footer{
+      padding:14px 16px;border-top:1.5px solid var(--border);
+      flex-shrink:0;background:var(--bg);
+      border-radius:0 0 0 0;
+    }
+    .modal-footer .btn{width:100%;}
+
+    /* Empty ingredients state */
+    .ing-empty{text-align:center;padding:32px 16px;color:var(--dark-60);}
+    .ing-empty p{font-size:.85rem;line-height:1.65;}
   </style>
 </head>
 <body>
@@ -65,7 +194,22 @@
         <p>No dishes in this meal yet.</p>
       </div>
 
-      <div style="margin-top:24px;padding-bottom:12px;" class="fade-up delay-2">
+      <!-- View all ingredients CTA (hidden until loaded) -->
+      <div id="grocery-cta-wrap" style="display:none;" class="fade-up delay-2">
+        <div style="margin-top:16px;margin-bottom:4px;">
+          <div class="grocery-cta" onclick="openIngModal()">
+            <span class="grocery-cta-icon">🛒</span>
+            <div class="grocery-cta-body">
+              <p class="grocery-cta-title">View all ingredients</p>
+              <p class="grocery-cta-sub">Add to your grocery list in one tap</p>
+            </div>
+            <span class="grocery-cta-badge" id="ing-total-badge">0</span>
+            <span class="grocery-cta-arrow">›</span>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top:20px;padding-bottom:12px;" class="fade-up delay-3">
         <button class="btn btn-danger btn-block" onclick="deleteMeal()">🗑 Delete Meal</button>
       </div>
     </div>
@@ -74,6 +218,30 @@
 
 <nav class="bottom-nav" id="bottom-nav"></nav>
 <div class="toast" id="toast"></div>
+
+<!-- ── Ingredients Modal ── -->
+<div class="modal-overlay" id="ing-modal" style="display:none;" onclick="closeModalOnBg(event)">
+  <div class="modal-sheet" onclick="event.stopPropagation()">
+    <div class="modal-handle"></div>
+    <div class="modal-header">
+      <div class="modal-header-left">
+        <h3>Meal Ingredients</h3>
+        <p id="modal-subtitle">All ingredients across dishes</p>
+      </div>
+      <button class="modal-close" onclick="closeIngModal()">×</button>
+    </div>
+
+    <div class="modal-body" id="modal-body">
+      <!-- Populated by JS -->
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn btn-green" id="add-groceries-btn" onclick="addToGroceries()">
+        🛒 Add to Grocery List
+      </button>
+    </div>
+  </div>
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script src="supabase.js"></script>
@@ -85,18 +253,28 @@
   const params = new URLSearchParams(window.location.search);
   const mealId = params.get('id');
 
-  const DISH_ORDER = ['Protein','Carb','Greens','Others'];
-  const TYPE_ICON  = {Protein:'🥩',Carb:'🍚',Greens:'🥦',Others:'✨'};
-  const BADGE_CLS  = {Protein:'badge-protein',Carb:'badge-carb',Greens:'badge-greens',Others:'badge-others'};
-  const TYPE_LABELS= {Breakfast:'☀️ Breakfast',Lunch:'🌤 Lunch',Dinner:'🌙 Dinner'};
+  const DISH_ORDER  = ['Protein','Carb','Greens','Others'];
+  const TYPE_ICON   = {Protein:'🥩',Carb:'🍚',Greens:'🥦',Others:'✨'};
+  const ING_ICON    = {Meat:'🥩',Vegetable:'🥦',Rice:'🍚',Noodle:'🍜',Others:'✨'};
+  const BADGE_CLS   = {Protein:'badge-protein',Carb:'badge-carb',Greens:'badge-greens',Others:'badge-others'};
+  const TYPE_LABELS = {Breakfast:'☀️ Breakfast',Lunch:'🌤 Lunch',Dinner:'🌙 Dinner'};
+
   let meal = null;
 
+  // checkedIngIds: Set of ingredient IDs the user has ticked in the modal
+  const checkedIngIds = new Set();
+
+  // allIngredients: flat deduplicated map of id → {id, name, type, to_buy, dishName}
+  let allIngredientsMap = new Map();
+
+  // ── Toast ────────────────────────────────────────────────────
   function showToast(msg,isErr=false){
     const t=document.getElementById('toast');
     t.textContent=msg;t.className='toast'+(isErr?' error':'');
     t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800);
   }
 
+  // ── Meal name builder ────────────────────────────────────────
   function buildMealName(dishes){
     const byType={};
     (dishes||[]).forEach(d=>{
@@ -107,6 +285,7 @@
     return DISH_ORDER.filter(t=>byType[t]).map(t=>byType[t].join(' & ')).join(' + ')||'(No dishes)';
   }
 
+  // ── Hero ─────────────────────────────────────────────────────
   function renderHero(m){
     const hero = document.getElementById('meal-hero');
     hero.className = `meal-hero page-wrap ${m.meal_type.toLowerCase()}`;
@@ -118,11 +297,15 @@
       <p class="hero-date">${dateStr}</p>`;
   }
 
+  // ── Dishes list ──────────────────────────────────────────────
   function renderDishes(dishes){
     document.getElementById('dishes-skeleton').style.display='none';
     const container = document.getElementById('dishes-container');
+
     if(!dishes||!dishes.length){
-      document.getElementById('no-dishes').style.display=''; return;
+      document.getElementById('no-dishes').style.display='';
+      document.getElementById('grocery-cta-wrap').style.display='none';
+      return;
     }
     container.style.display='';
     container.innerHTML = dishes.map(r=>{
@@ -138,8 +321,46 @@
         <span class="dish-card-arrow">›</span>
       </div>`;
     }).join('');
+
+    // Build ingredient map from nested data
+    buildIngredientMap(dishes);
   }
 
+  // ── Build deduplicated ingredient map from dish data ─────────
+  function buildIngredientMap(mealDishes){
+    allIngredientsMap.clear();
+    (mealDishes||[]).forEach(r=>{
+      const dish = r.dishes||r;
+      const dishIngredients = dish.dish_ingredients||[];
+      dishIngredients.forEach(di=>{
+        const ing = di.ingredients;
+        if(!ing) return;
+        if(!allIngredientsMap.has(ing.id)){
+          allIngredientsMap.set(ing.id, {
+            id:     ing.id,
+            name:   ing.ingredient_name,
+            type:   ing.ingredient_type,
+            to_buy: ing.to_buy,
+            dishNames: [dish.dish_name]
+          });
+        } else {
+          // ingredient appears in multiple dishes — track all dish names
+          allIngredientsMap.get(ing.id).dishNames.push(dish.dish_name);
+        }
+      });
+    });
+
+    // Show / update grocery CTA badge
+    const total = allIngredientsMap.size;
+    if(total > 0){
+      document.getElementById('ing-total-badge').textContent = total;
+      document.getElementById('grocery-cta-wrap').style.display='';
+    } else {
+      document.getElementById('grocery-cta-wrap').style.display='none';
+    }
+  }
+
+  // ── Remove dish ──────────────────────────────────────────────
   async function removeDish(e, dId){
     e.stopPropagation();
     if(!confirm('Remove this dish from the meal?')) return;
@@ -147,7 +368,6 @@
       .eq('meal_id',mealId).eq('dish_id',dId);
     if(error){ showToast('Could not remove dish',true); return; }
     showToast('Dish removed');
-    // re-fetch
     loadMeal();
   }
 
@@ -160,12 +380,191 @@
     window.location='meals.html';
   }
 
+  // ── Ingredients Modal ────────────────────────────────────────
+  function openIngModal(){
+    checkedIngIds.clear();
+
+    const ingredients = [...allIngredientsMap.values()];
+    const notYetAdded = ingredients.filter(i=>!i.to_buy);
+    // Pre-check all ingredients not yet on grocery list
+    notYetAdded.forEach(i=>checkedIngIds.add(i.id));
+
+    renderIngModal(ingredients);
+    document.getElementById('ing-modal').style.display='flex';
+  }
+
+  function closeIngModal(){
+    document.getElementById('ing-modal').style.display='none';
+  }
+
+  function closeModalOnBg(e){
+    if(e.target===document.getElementById('ing-modal')) closeIngModal();
+  }
+
+  function renderIngModal(ingredients){
+    const body = document.getElementById('modal-body');
+    const totalCount = ingredients.length;
+    const alreadyCount = ingredients.filter(i=>i.to_buy).length;
+
+    document.getElementById('modal-subtitle').textContent =
+      `${totalCount} ingredient${totalCount!==1?'s':''} · ${alreadyCount} already in grocery list`;
+
+    if(!ingredients.length){
+      body.innerHTML=`<div class="ing-empty"><p>No ingredients found.<br/>Add ingredients to your dishes first.</p></div>`;
+      updateAddBtn();
+      return;
+    }
+
+    // Group by dishName (first dish they appear in)
+    // We iterate meal_dishes order to preserve dish ordering
+    const meal_dishes = meal?.meal_dishes||[];
+    const seenIds = new Set();
+    let html = '';
+
+    // Select-all bar
+    html += `<div class="select-all-bar">
+      <span class="selected-count-label" id="sel-count-label">${checkedIngIds.size} selected</span>
+      <button class="select-all-btn" onclick="selectAll()">Select all not added</button>
+    </div>`;
+
+    meal_dishes.forEach(r=>{
+      const dish = r.dishes||r;
+      if(!dish) return;
+      const dishIngs = (dish.dish_ingredients||[])
+        .map(di=>di.ingredients)
+        .filter(Boolean)
+        .filter(ing=>{ // deduplicate across dishes
+          if(seenIds.has(ing.id)) return false;
+          seenIds.add(ing.id);
+          return true;
+        });
+
+      if(!dishIngs.length) return;
+
+      const typeClass = (dish.dish_type||'').toLowerCase();
+      html += `<div class="ing-dish-group">
+        <div class="ing-dish-label">
+          <div class="dish-icon-sm ${typeClass}">${TYPE_ICON[dish.dish_type]||'🍴'}</div>
+          ${dish.dish_name}
+        </div>
+        <div class="list-block" style="border-radius:var(--r-sm);">
+          ${dishIngs.map(ing=>{
+            const alreadyAdded = ing.to_buy;
+            const isChecked    = checkedIngIds.has(ing.id);
+            return `<div class="ing-check-item${isChecked?' checked':''}${alreadyAdded?' already-added':''}"
+              id="ic-${ing.id}"
+              onclick="${alreadyAdded ? '' : `toggleIng('${ing.id}')`}">
+              <div class="check-box">${alreadyAdded ? '✓' : (isChecked ? '✓' : '')}</div>
+              <div class="ing-check-body">
+                <p class="ing-check-name">${ing.ingredient_name}</p>
+                <div class="ing-check-sub">
+                  <span>${ING_ICON[ing.ingredient_type]||'✨'} ${ing.ingredient_type}</span>
+                  ${alreadyAdded ? '<span class="already-tag">In grocery list</span>' : ''}
+                </div>
+              </div>
+            </div>`;
+          }).join('')}
+        </div>
+      </div>`;
+    });
+
+    body.innerHTML = html;
+    updateAddBtn();
+  }
+
+  function toggleIng(id){
+    const el = document.getElementById(`ic-${id}`);
+    if(!el || el.classList.contains('already-added')) return;
+    if(checkedIngIds.has(id)){
+      checkedIngIds.delete(id);
+      el.classList.remove('checked');
+      el.querySelector('.check-box').textContent='';
+    } else {
+      checkedIngIds.add(id);
+      el.classList.add('checked');
+      el.querySelector('.check-box').textContent='✓';
+    }
+    updateSelCount();
+    updateAddBtn();
+  }
+
+  function selectAll(){
+    allIngredientsMap.forEach((ing,id)=>{
+      if(ing.to_buy) return; // skip already-added
+      checkedIngIds.add(id);
+      const el = document.getElementById(`ic-${id}`);
+      if(el){ el.classList.add('checked'); el.querySelector('.check-box').textContent='✓'; }
+    });
+    updateSelCount();
+    updateAddBtn();
+  }
+
+  function updateSelCount(){
+    const lbl = document.getElementById('sel-count-label');
+    if(lbl) lbl.textContent = `${checkedIngIds.size} selected`;
+  }
+
+  function updateAddBtn(){
+    const btn = document.getElementById('add-groceries-btn');
+    const n = checkedIngIds.size;
+    btn.textContent = n > 0
+      ? `🛒 Add ${n} ingredient${n!==1?'s':''} to Grocery List`
+      : '🛒 Add to Grocery List';
+    btn.disabled = (n === 0);
+  }
+
+  // ── Save to grocery list ─────────────────────────────────────
+  async function addToGroceries(){
+    if(!checkedIngIds.size){ showToast('No ingredients selected.',true); return; }
+
+    const btn = document.getElementById('add-groceries-btn');
+    btn.disabled=true; btn.textContent='Saving…';
+
+    const ids = [...checkedIngIds];
+    const {error} = await db.from('ingredients')
+      .update({to_buy:true})
+      .in('id', ids);
+
+    if(error){
+      showToast('Could not update grocery list: '+error.message, true);
+      btn.disabled=false;
+      updateAddBtn();
+      return;
+    }
+
+    // Mark them locally so UI reflects new state
+    ids.forEach(id=>{
+      if(allIngredientsMap.has(id)) allIngredientsMap.get(id).to_buy = true;
+    });
+
+    closeIngModal();
+    const n = ids.length;
+    showToast(`✓ ${n} ingredient${n!==1?'s':''} added to grocery list`);
+
+    // Refresh meal data silently to keep ingredient map in sync
+    loadMeal();
+  }
+
+  // ── Load meal (expanded query with dish_ingredients) ─────────
   async function loadMeal(){
     const {data,error} = await db
       .from('meals')
-      .select('id,meal_date,meal_type,meal_dishes(dish_id,dishes(id,dish_name,cuisine,dish_type))')
+      .select(`
+        id, meal_date, meal_type,
+        meal_dishes(
+          dish_id,
+          dishes(
+            id, dish_name, cuisine, dish_type,
+            dish_ingredients(
+              ingredient_id,
+              ingredients(id, ingredient_name, ingredient_type, to_buy)
+            )
+          )
+        )
+      `)
       .eq('id',mealId)
       .single();
+
     if(error||!data){ showToast('Could not load meal',true); return; }
     meal=data;
     renderHero(data);
